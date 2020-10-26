@@ -1,11 +1,11 @@
-# TrueType
-TrueType implementation from scratch
+# True (open, free) Type
+True (open, free) Type implementation from scratch
 
 # Aims
 1. Indroducing the concept of Bezier curve
-2. Design glyphs based on curves and lines
-3. Render each glyph in subpixel regime
-4. Implementing smoothing filters
+2. Design of True (open, free) Type glyphs based on curves and lines
+3. Rendering glyphs in subpixel regime
+4. Implementation of smoothing low pass filters
 
 # prerequisites
 - Knowledge of subpixel rendering on LCD panels
