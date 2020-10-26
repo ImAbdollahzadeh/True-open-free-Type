@@ -7,7 +7,7 @@ True (open, free) Type implementation from scratch
 3. Rendering glyphs in subpixel regime
 4. Implementation of smoothing low pass filters
 
-# prerequisites
+# Prerequisites
 - Knowledge of subpixel rendering on LCD panels
 - Knowledge of C programming language
 
