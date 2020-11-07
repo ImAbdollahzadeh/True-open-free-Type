@@ -101,6 +101,6 @@ I drew some straight lines and curves to design the letter 'a'. It would be a lo
 
 In my font_rasterizer source code, I have everything at hand too look at. As a side note, for later implementation of character filling, we need a way to signal our lines and curves. We need a flag for each line and curve to signal the engine what is the *direction* of the line or curve. You need to label them as being **UPWARD**, **DOWNWARD**, **RIGHTSIDE**, or **LEFTSIDE**. With this in mind, we would later be able to decide where to fill and where not to bother to fill in order to construct our face-type.
 
-I assume it is a bit misleading and unclear now, what I explained regarding labeling each line or curve for its direction, but believe me, there is no othe ways to decide where is **inside** a face-type and where is **outside**. Fine details come in the next step.
+I assume it is a bit misleading and unclear now, what I explained regarding labeling each line or curve for its direction, but believe me, there is no other ways to decide where is **inside** a face-type and where is **outside**. Fine details come in the next step.
 
 ## STEP 3:
