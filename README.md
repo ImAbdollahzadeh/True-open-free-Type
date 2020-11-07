@@ -62,4 +62,5 @@ As you might guess, there are quite some big steps to optmize the code above sti
 The detailed optimization would be neglected hre for the sake of not getting too much complex. Of course later during my SIMD optimization tutorial, we will go through all the mentioned codes.
 
 The following image shows an example bezier curve that I rendered with the use of above mentioned source code. The 4 dawn small circles represent te place of 4 bezier curve control points.
-<img align="center" width="100" height="100" src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/bezier_demo.PNG"/>
+
+<img align="center" width="300" height="300" src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/bezier_demo.PNG"/>
