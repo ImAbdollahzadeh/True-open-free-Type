@@ -23,32 +23,32 @@ Having long concept short, I will create 4 2D points as an array (e.g. ***POINTS
 
 For a detailed implementation and description of what I explained above, look at my source code (bezier_curve)
 This is how it works in its native non-optimized way:
-static void draw_bezier_curve(POINT_2D* p, unsigned int color)
-{
-  const unsigned int bits_per_pixel = 24;
-  unsigned int bytes_per_pixel = bits_per_pixel >> 3;
-	unsigned int width = WINDOW_WIDTH_ALIGN(bytes_per_pixel * 512); // statically, I want a window with size 512 x 512 pixels
-	unsigned char red = color;
-	unsigned char grn = (color & 0x00FF00) >> 8;
-	unsigned char blu = (color & 0xFF0000) >> 16;
-	double xu = 0.0; // x coordinate
-  double yu = 0.0; // y coordinate
-  double u  = 0.0; // iterator in range [0, 1]
-  
-	for (u = 0.0; u <= 1.0; u += 0.001)
-  {
-    // this is where all the curvature controlling coefficients are calculated
-		double A = pow(1 - u, 3);
-		double B = 3 * u * pow(1 - u, 2);
-		double C = 3 * pow(u, 2) * (1 - u);
-		double D = pow(u, 3);
-
-		xu = A * p[0].x + B * p[1].x + C * p[2].x + D * p[3].x;
-		yu = A * p[0].y + B * p[1].y + C * p[2].y + D * p[3].y;
-
-		unsigned int px = ((unsigned int)yu * width) + ((unsigned int)xu * bytes_per_pixel);
-		fb[px    ] = red;
-		fb[px + 1] = grn;
-		fb[px + 2] = blu;
+	static void draw_bezier_curve(POINT_2D* p, unsigned int color)
+	{
+		const unsigned int bits_per_pixel = 24;
+		unsigned int bytes_per_pixel = bits_per_pixel >> 3;
+		unsigned int width = WINDOW_WIDTH_ALIGN(bytes_per_pixel * 512); // statically, I want a window with size 512 x 512 pixels
+		unsigned char red = color;
+		unsigned char grn = (color & 0x00FF00) >> 8;
+		unsigned char blu = (color & 0xFF0000) >> 16;
+		double xu = 0.0; // x coordinate
+  		double yu = 0.0; // y coordinate
+  		double u  = 0.0; // iterator in range [0, 1]
+  		
+		for (u = 0.0; u <= 1.0; u += 0.001)
+  		{
+    			// this is where all the curvature controlling coefficients are calculated
+			double A = pow(1 - u, 3);
+			double B = 3 * u * pow(1 - u, 2);
+			double C = 3 * pow(u, 2) * (1 - u);
+			double D = pow(u, 3);
+			
+			xu = A * p[0].x + B * p[1].x + C * p[2].x + D * p[3].x;
+			yu = A * p[0].y + B * p[1].y + C * p[2].y + D * p[3].y;
+			
+			unsigned int px = ((unsigned int)yu * width) + ((unsigned int)xu * bytes_per_pixel);
+			fb[px    ] = red;
+			fb[px + 1] = grn;
+			fb[px + 2] = blu;
+		}
 	}
-}
