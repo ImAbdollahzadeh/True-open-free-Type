@@ -106,6 +106,6 @@ I assume it is a bit misleading and unclear now, what I explained regarding labe
 ## STEP 3:
 
 <p align="center">
-	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/filling_with_direction_flags.PNG"/>
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/filling_based_on_direction_flags.PNG"/>
 </p>
 
