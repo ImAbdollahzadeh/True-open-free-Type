@@ -42,7 +42,7 @@ This is how it works in its native non-optimized way:
   		
 		for (u = 0.0; u <= 1.0; u += 0.001)
   		{
-    			// this is where all the curvature controlling coefficients are calculated
+			// this is where all the curvature controlling coefficients are calculated
 			double A = pow(1 - u, 3);
 			double B = 3 * u * pow(1 - u, 2);
 			double C = 3 * pow(u, 2) * (1 - u);
