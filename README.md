@@ -61,4 +61,4 @@ This is how it works in its native non-optimized way:
 As you might guess, there are quite some big steps to optmize the code above still in C. The coefficients A, B, C, and D can be calculated without further calling ino function ***pow***. Another critical step would be acquiring x86-SSE assembly into play to further optimize xu and xy calculations and also casting them into unsigned int.
 The detailed optimization would be neglected hre for the sake of not getting too much complex. Of course later during my SIMD optimization tutorial, we will go through all the mentioned codes.
 
-<img src="/tuorial_resources/bezier_demo.png"/>
+<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/bezier_demo.PNG"/>
