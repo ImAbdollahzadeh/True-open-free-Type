@@ -66,3 +66,5 @@ The following image shows a bezier curve rendered with the use of the upper sour
 <p align="center">
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/bezier_demo.PNG"/>
 </p>
+
+## Designing a simple glyph based on only curves and lines
