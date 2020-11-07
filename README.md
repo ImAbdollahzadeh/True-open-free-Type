@@ -14,7 +14,7 @@ True (open, free) Type implementation from scratch
 # Optimization
 - SIMD optimization 
 
-#Let's get started.
+# Let's get started.
 ## Bezier Curves
 What I did to render a curve on screen is constructing a power series (up to 3rd order) which control the curvature of the path.
 In fact in my curve implementation, I stick to cubic bezier curve. It simply is an equation in form of AX^3 + BX^2 + CX + D.
