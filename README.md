@@ -104,3 +104,8 @@ In my font_rasterizer source code, I have everything at hand too look at. As a s
 I assume it is a bit misleading and unclear now, what I explained regarding labeling each line or curve for its direction, but believe me, there is no other ways to decide where is **inside** a face-type and where is **outside**. Fine details come in the next step.
 
 ## STEP 3:
+
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/filling_with_direction_flags.PNG"/>
+</p>
+
