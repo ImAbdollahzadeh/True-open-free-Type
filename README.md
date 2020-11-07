@@ -68,3 +68,20 @@ The following image shows a bezier curve rendered with the use of the upper sour
 </p>
 
 ## Designing a simple glyph based on only curves and lines
+A glyph, this is what I would like to concentrate on how to build and render. For simplicity, I would stick to constant sized glyphs for all face-types. With thatbeig said, I implement a 9 x 27 pixel area as a glyph to have a text in 12pt sized. T have something similar to 36 pt, I simply triple both width and height to have 27 x 81 px area.
+
+The value of 9 x 27 is not a random picking value, instead, I followed what had been already done in fonts such as consolas or Times New Roman. Therefore, my approximation is basically perfectly matched to the standard.
+
+In my native C implementation, I consider each pixel to be 24 bits (3 bytes) long. This is not good for optimization, but truly fine for initial demonstration of the concept. Please note that, during the acceleration of the whole process of a glyph rendering, I will switch to 32 bis per pixel, but this would be left for future.
+
+What would be the actual pipeline towards the task? They are:
+
+1. drawing the borders of a face-type with the use of curves and lines
+2. filling the pixels INSIDE the borders to have a filled face-type (i.e. character)
+3. distribute the designed face-type into subpixels
+4. calculate how much of each subpixels have been filled with the character to perform anti-aliasing
+5. applying the RGB-YUV-RGB space conversions to filter (smooth) the character
+6. render it
+
+If you look at the whole steps, you'll notice that it takes the font rasterizer engine (our software) to be busy for several ten miliseconds to only render a single character on screen. As being said several times, for the purpose of demonstration, it is truly fine. Later on I will get the hand dirty on how to accelerate everthing in the pipeline with a bit of C code modification and using x86-SSE optimization, therefore, stay tuned for the comming tutorials.
+
