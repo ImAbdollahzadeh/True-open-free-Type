@@ -102,17 +102,18 @@ I drew some straight lines and curves to design the letter 'a'. It would be a lo
 In my font_rasterizer source code, I have everything at hand too look at. As a side note, for later implementation of character filling, we need a way to signal our lines and curves. We need a flag for each line and curve to signal the engine what is the *direction* of the line or curve. You need to label them as being **UPWARD**, **DOWNWARD**, **RIGHTSIDE**, or **LEFTSIDE**. With this in mind, we would later be able to decide where to fill and where not to bother to fill in order to construct our face-type.
 
 I assume it is a bit misleading and unclear now, what I explained regarding labeling each line or curve for its direction, but believe me, there is no other ways to decide where is **inside** a face-type and where is **outside**. Fine details come in the next step.
-typedef enum _CONTOUR_DIRECTION {
-	CONTOUR_DIRECTION_UP = 0x1,
-	CONTOUR_DIRECTION_DOWN = 0x2,
-	CONTOUR_DIRECTION_LEFT = 0x3,
-	CONTOUR_DIRECTION_RIGHT = 0x4,
-} CONTOUR_DIRECTION;
 
 ## STEP 3:
 One of the most challenges in type-face design is to fill the pixels inside the borders defines with lines and curves.
 For this reason we define a set of flags to label each element. 
 There is one very important rule to be considered. Only pixels laying in between one element (i.e. line or curve) labeled as CONTOUR_DIRECTION_UP in its left side and an element with label CONTOUR_DIRECTION_DOWN in its right side are supposed to be painted. Think about an example for a moment (with the help of the following image). Suppose there is a standing rectangle that should be filled. We have two vertical lines and two horizontal lines to define the borders of this rectangle. The left vertical line was labeled as CONTOUR_DIRECTION_UP and the vertical line in the right side was CONTOUR_DIRECTION_DOWN. Whatever pixels are in between these 2 lines have to be filled. If there would be two rectangles next to each other, we are able to paint pixels between vertical lines of the leftmost rectangle, then there is pixels between right vertical line of the left rectangle and the left vertical line of the right rectangle that should be untouched. This can be only done since the labeling of lines now follows CONTOUR_DIRECTION_DOWN - CONTOUR_DIRECTION_UP and we invalidate this configuration for painting pixels. To make more sence of this, please look at the figure below and read this step once more from the beginnig.
+
+	typedef enum _CONTOUR_DIRECTION {
+		CONTOUR_DIRECTION_UP    = 0x1,
+		CONTOUR_DIRECTION_DOWN  = 0x2,
+		CONTOUR_DIRECTION_LEFT  = 0x3,
+		CONTOUR_DIRECTION_RIGHT = 0x4,
+	} CONTOUR_DIRECTION;
 
 <p align="center">
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/filling_basedOn_direction_flags.PNG"/>
