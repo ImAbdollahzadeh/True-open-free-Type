@@ -93,3 +93,8 @@ Design a working place. I scaled up my 9 x 19 pixelized area to 216 x 456 px are
 </p>
 
 ## STEP 2:
+I drew some straight lines and curves to design the letter 'a'. It would be a lot of trial and errors to fix all the points to their positions and also to find a good-looking curve. I am quite happy with my letter 'a' and you can have a look at what I designed so far.
+
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/a_borders.PNG"/>
+</p>
