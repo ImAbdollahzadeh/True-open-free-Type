@@ -63,4 +63,6 @@ The detailed optimization would be neglected hre for the sake of not getting too
 
 The following image shows an example bezier curve that I rendered with the use of above mentioned source code. The 4 dawn small circles represent te place of 4 bezier curve control points.
 
-<img align="center" width="300" height="300" src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/bezier_demo.PNG"/>
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/bezier_demo.PNG"/>
+</p>
