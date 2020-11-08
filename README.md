@@ -216,7 +216,7 @@ To demonstrate the power of the method, look at the following image.
 
 ## STEP 4:
 ### subpixel regime
-So far we were able to have a filled character on our 9 x 19 px area (which is represetative of our glyph). Now the question is how to determine how much of a subpixel (R,G, or B elements of a pixel) has to be turned of in order to get the full advantage of subpixel regime?
+So far we were able to have a filled character on our 9 x 19 px area (which is represetative of our glyph). Now the question is how to determine how much of a subpixel (R,G, or B elements of a pixel) has to be turned on in order to get the full advantage of subpixel rendeing regime?
 
 For this reason, I have defined a data structure called **PIXEL_BLOCK** as following
 
@@ -247,17 +247,17 @@ In initialization of a PIXEL_BLOCK buffer, I would have
 		}
 	}
 	
-A pixel block is one the 8 x 24 colorful blocks (totally red, green, or blue) which I made to show a subpixel element (look at the given images above). If we look at the data structure, we have two important variables, dark_pixels, and color_intensity. Duing initialization of pixel block buffer, dark_pixels was given 192 (that is 8 times 24) and this is the total number of actual pixels in a pixel block. The variable color_intensity gves the intensity of that particular pixel block andinitially was set to 0xFF (fully turned on).
+A pixel block is one of the 8 x 24 colorful blocks (totally red, green, or blue) which I made to show a subpixel element (look at the given images above). If we look at the data structure, we have two important variables, *dark_pixels*, and *color_intensity*. During the initialization of pixel block buffer, dark_pixels field was given the value 192 (that is 8 times 24) and this is the total number of actual pixels in a pixel block. The variable color_intensity, on the other hand, gives the intensity of that particular pixel block and initially was set to 0xFF (fully turned on).
 
-Okay, what we can get out of it? If you look at the last image above, after having a filled 'a' character, many of blocks are still fully uncovered with the charater, some partially covered and some fully are black painted. This is where we need once more to go through some calculations to assign a final color intensity to every single pixel block based on the number of already covered pixels on that block.
+Okay, what we can get out of all this? If you look at the last image above, after having a filled 'a' character, many of the blocks are still fully uncovered with the character, some are partially covered, and some are fully black painted. This is where we need once more to go through some calculations to assign a final color intensity to every single pixel block based on the number of already covered pixels on that block.
 
 	void put_pixel(unsigned int x, unsigned int y);
 	
-This function is called thousands of time by line or curve drawer to adjust the dark_pixels field f PIXEL_BLOCK buffer according to arguments x and y. In this function, it finds the corresponding pixel block (with the use of x and y), and decrements the dark_pixels filed of that block.
+This function is called thousands of times by line or curve drawer functions to adjust the dark_pixels field of PIXEL_BLOCK buffer according to arguments x and y (the coordination of a given pixel). In this function, it finds the corresponding pixel block (with the use of x and y), and decrements the dark_pixels filed of that block.
 
 	void put_block_on_fb(PIXEL_BLOCK* pb, unsigned int counter);
 	
-This function is the actual place where the engine re-draw all the pixel blocks from scratch based on their color_intensity field. The counter argument was given during ***rasterize_full_scene*** function call. It simply determines which pixel block we are at. This parameter starts from 0 and goes to the last pixel block element.
+This function is the actual place where the engine re-draw all the pixel blocks from scratch based on their color_intensity field. The counter argument was given during ***rasterize_full_scene*** function call. It simply determines which pixel block we are in, and this parameter starts from 0 and goes to the last pixel block element.
 Inside ***rasterize_full_scene*** function, we have
 
 	while (counter < max)
@@ -268,7 +268,7 @@ Inside ***rasterize_full_scene*** function, we have
 		counter++;
 	}
 	
-The second line inside the *while* loop, is where the pixel block color_intensity is calculated based on the value of dark_pixels for the block.
+The second line inside the *while* loop, is where the pixel block color_intensity is calculated from the value dark_pixels for the block.
 To see what we can get from all of these functions, have a look at the following image
 
 <p align="center">
