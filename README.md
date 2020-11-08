@@ -216,3 +216,62 @@ To demonstrate the power of the method, look at the following image.
 
 ## STEP 4:
 ### subpixel regime
+So far we were able to have a filled character on our 9 x 19 px area (which is represetative of our glyph). Now the question is how to determine how much of a subpixel (R,G, or B elements of a pixel) has to be turned of in order to get the full advantage of subpixel regime?
+
+For this reason, I have defined a data structure called **PIXEL_BLOCK** as following
+
+	typedef struct _PIXEL_BLOCK {
+		unsigned char    width;
+		unsigned char    height;
+		BLOCK_COLOR_CODE code;
+		unsigned char    dark_pixels;
+		unsigned char    color_intensity;
+	} PIXEL_BLOCK;
+	
+In initialization of a PIXEL_BLOCK buffer, I would have
+
+	void init_pixel_blocks(void)
+	{
+		unsigned int i;
+		unsigned char code = 0;
+		for (i = 0; i < (wnd_wd / 8) * (wnd_ht / 24); i++)
+		{
+			pixel_blocks[i].width           = 8;                      // actual row pixels of this block
+			pixel_blocks[i].height          = 24;                     // actual column pixels of this block
+			pixel_blocks[i].dark_pixels     = 192;                    // actual total number of pixels of this block
+			pixel_blocks[i].color_intensity = 0xFF;                   // in the beginning our pixel block is fully turned on
+			pixel_blocks[i].code            = (BLOCK_COLOR_CODE)code; // a flag to shows R, G, or B block
+			code++;
+			if (code == 3)
+				code = 0;
+		}
+	}
+	
+A pixel block is one the 8 x 24 colorful blocks (totally red, green, or blue) which I made to show a subpixel element (look at the given images above). If we look at the data structure, we have two important variables, dark_pixels, and color_intensity. Duing initialization of pixel block buffer, dark_pixels was given 192 (that is 8 times 24) and this is the total number of actual pixels in a pixel block. The variable color_intensity gves the intensity of that particular pixel block andinitially was set to 0xFF (fully turned on).
+
+Okay, what we can get out of it? If you look at the last image above, after having a filled 'a' character, many of blocks are still fully uncovered with the charater, some partially covered and some fully are black painted. This is where we need once more to go through some calculations to assign a final color intensity to every single pixel block based on the number of already covered pixels on that block.
+
+	void put_pixel(unsigned int x, unsigned int y);
+	
+This function is called thousands of time by line or curve drawer to adjust the dark_pixels field f PIXEL_BLOCK buffer according to arguments x and y. In this function, it finds the corresponding pixel block (with the use of x and y), and decrements the dark_pixels filed of that block.
+
+	void put_block_on_fb(PIXEL_BLOCK* pb, unsigned int counter);
+	
+This function is the actual place where the engine re-draw all the pixel blocks from scratch based on their color_intensity field. The counter argument was given during ***rasterize_full_scene*** function call. It simply determines which pixel block we are at. This parameter starts from 0 and goes to the last pixel block element.
+Inside ***rasterize_full_scene*** function, we have
+
+	while (counter < max)
+	{
+		pb = &pixel_blocks[counter];
+		pb->color_intensity = (unsigned char)(1.328125f * (float)(pb->dark_pixels));
+		put_block_on_fb(pb, counter);
+		counter++;
+	}
+	
+The second line inside the *while* loop, is where the pixel block color_intensity is calculated based on the value of dark_pixels for the block.
+To see what we can get from all of these functions, have a look at the following image (which is the end-result of the face-type engine)
+
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/a_letter_subpixel.PNG"/>
+</p>
+
