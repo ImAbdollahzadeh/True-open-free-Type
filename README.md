@@ -269,7 +269,7 @@ Inside ***rasterize_full_scene*** function, we have
 	}
 	
 The second line inside the *while* loop, is where the pixel block color_intensity is calculated based on the value of dark_pixels for the block.
-To see what we can get from all of these functions, have a look at the following image (which is the end-result of the face-type engine)
+To see what we can get from all of these functions, have a look at the following image
 
 <p align="center">
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/a_letter_subpixel.PNG"/>
