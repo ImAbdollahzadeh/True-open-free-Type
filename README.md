@@ -191,3 +191,6 @@ I have a shown a part of the source code from *font_rasterizer* here. It shows h
 			j++;
 		}
 	}
+
+framebuffer_pixel is a byte representing the actual framebuffer, while framebuffer_bitmap_pixel is a byte representing the DIRECTION of each pixel in framebuffer_pixel.
+During drawing a line or curve into framebuffer, I put the DIRECTION flag related to that line or curve into another separate buffer called framebuffer_bitmap_pixel. When my line or curve drawer decides to put a black pixel at, for intance, x = 100 and y = 50, at the same time it put a DIRECTION flag at x = 100 and y = 50 into framebuffer_bitmap_pixel. This is why in my source code provided above, ...
