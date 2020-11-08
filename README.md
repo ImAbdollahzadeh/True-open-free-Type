@@ -169,10 +169,6 @@ I have a shown a part of the source code from *font_rasterizer* here. It shows h
 						if (*framebuffer_bitmap_pixel == CONTOUR_DIRECTION_DOWN)
 							break;
 
-						unsigned char* target = framebuffer_bitmap_pixel + 1;
-						while ( !(*target) )
-							target++;
-
 						framebuffer_pixel[framebuffer_pixel_counter    ] = 0;
 						framebuffer_pixel[framebuffer_pixel_counter + 1] = 0;
 						framebuffer_pixel[framebuffer_pixel_counter + 2] = 0;
@@ -192,5 +188,28 @@ I have a shown a part of the source code from *font_rasterizer* here. It shows h
 		}
 	}
 
-framebuffer_pixel is a byte representing the actual framebuffer, while framebuffer_bitmap_pixel is a byte representing the DIRECTION of each pixel in framebuffer_pixel.
-During drawing a line or curve into framebuffer, I put the DIRECTION flag related to that line or curve into another separate buffer called framebuffer_bitmap_pixel. When my line or curve drawer decides to put a black pixel at, for intance, x = 100 and y = 50, at the same time it put a DIRECTION flag at x = 100 and y = 50 into framebuffer_bitmap_pixel. This is why in my source code provided above, ...
+*framebuffer_pixel* is a byte representing the actual framebuffer, while *framebuffer_bitmap_pixel* is a byte representing the DIRECTION of each pixel in framebuffer_pixel.
+During drawing of a line or curve into framebuffer, I put the **DIRECTION** flag related to that line or curve into another separate buffer called framebuffer_bitmap_pixel. When my line or curve drawer decides to put a black pixel at, for intance, x = 100 and y = 50, at the same time, it puts a DIRECTION flag at x = 100 and y = 50 into framebuffer_bitmap_pixel. 
+
+	if (fb_bitmap[(j * wnd_wd) + i] != 0)
+	
+This part of he code searches for the first labeled pixel. When finds it, do the other criteria.
+
+	/* check to see that it is not the very last bitmap byte in a row */
+	unsigned int cnt = wnd_wd - i;
+	while ((*framebuffer_bitmap_pixel == 0) && cnt)
+	{
+		framebuffer_bitmap_pixel++;
+		cnt--;
+	}
+	if (!cnt)
+		break;
+		
+If there is another pixel labeled in the same row, most probably we have an UP-DOWN combination, otherwise, if we would reach the end of that specific row, we simply neglect the rest of te row. In another word, to be a pixel inside a border, there should be two labeles in a given scan row. The left should be UP and the right must be DOWN (this is the only criteria to accept).
+The variable ***cnt*** above makes us to see if we reach the end of the row or not. If ***cnt*** reaches 0, it means we covered the whole row without being able to find an UP-DOWN case to math. The rest of the source code if how to paint the pixels.
+
+To demonstrate the power of the method, look at the following image.
+
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/a_letter_filled_completely.PNG"/>
+</p>
