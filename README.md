@@ -213,3 +213,6 @@ To demonstrate the power of the method, look at the following image.
 <p align="center">
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/a_letter_filled_completely.PNG"/>
 </p>
+
+## STEP 4:
+### subpixel regime
