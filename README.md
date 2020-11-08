@@ -119,3 +119,11 @@ There is one very important rule to be considered. Only pixels laying in between
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/filling_basedOn_direction_flags.PNG"/>
 </p>
 
+Okay, now we know how to proceed. In general, when I design a face-type, I would think of givin a direction to it to be later filled up. The rule is to start from leftmost lines and curves towards right. This is bcause all the pixel's buffer reading and writing are done left to right. Having considered that, in my previous example with character 'a', I will have such a thing:
+
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/filling_basedOn_direction_flags.PNG"/>
+</p>
+
+Please note the points highlighted with black circles and also the directions that I assigned to each line or curve. If you search for a way to fill up only pixes **inside** the face-type, you would realize that the rule is to only paint pixels between UP-DOWN borders and all the rest cases should be neglected. Therefore, you see the easiness of using these CONTOUR_DIRECTION labels. 
+
