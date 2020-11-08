@@ -128,3 +128,66 @@ Okay, now we know how to proceed. In general, when I design a face-type, I would
 Please note the points highlighted with black circles and also the directions that I assigned to each line or curve. If you search for a way to fill up only pixes **inside** the face-type, you would realize that the rule is to only paint pixels between UP-DOWN borders and all the rest cases should be neglected. Therefore, you see the easiness of using these CONTOUR_DIRECTION labels. 
 
 One of the most critical steps in face-type rendering is ecatly this point, filling up the pixels inside a face-type border. You would scan line by line and keep track of pixels in between UP and DOWN labels and paint them with black. It is much more complex than what you think in terms of fast performance. In my 24 bits per pixel setup, there is less room for optimizations. One very obvious way is switching into 32 bits per pixel, hence, letting you paint pixels black with QWORD pointers (unsigned long long*) scanning instead of BYTE (unsigned char*) scanning. This will give you 8x speed up. Another trick which will be covered later during the SIMD optimization topic, would be aligning the whole face-type area to 16-bytes and fast scanning and filling pixels with XMM (i.e. 128 bit) pointers writing. This will also give you an extra 2x speed up. Therefore, you will be able to optimize pixel filling by roughly 16x faster speed than native C with BYTE pointer writing. Just to give you a sence of what we can achieve, I optimized the 'a' character filling up from ~5 ms to ~500 µs (10x faster).
+
+This is time to actually apply all the criteria mentioned so far in this step, to construct our 'a' character. 
+I have a shown a part of the source code from *font_rasterizer* here. It shows how one i able to implement the pixel filling up.
+
+	static void fill_path(RASTERIZATION_MODE rm, BOOL subpixel)
+	{
+		if ((rm == RASTERIZATION_MODE_PATH_ONLY) && !subpixel)
+			return;
+		
+		unsigned int i = 0, j = 0;
+		while (j < wnd_ht)
+		{
+			while (i < wnd_wd)
+			{
+				if (fb_bitmap[(j * wnd_wd) + i] != 0)
+				{
+					unsigned char* framebuffer_pixel = &fb[(j*WINDOW_WIDTH_ALIGN(3 * wnd_wd)) + 3 * i];
+					unsigned int   framebuffer_pixel_counter = 0;
+					unsigned char* framebuffer_bitmap_pixel = &fb_bitmap[(j * wnd_wd) + i];
+					
+					/* add 1 to increment one byte */
+					framebuffer_bitmap_pixel++;
+					
+					/* check to see that it is not the very last bitmap byte in a row */
+					unsigned int cnt = wnd_wd - i;
+					while ((*framebuffer_bitmap_pixel == 0) && cnt)
+					{
+						framebuffer_bitmap_pixel++;
+						cnt--;
+					}
+					if (!cnt)
+						break;
+					
+					/* if not the last bitmap byte in the row, do checking the acception direction conventions */
+					framebuffer_bitmap_pixel = &fb_bitmap[(j * wnd_wd) + i];
+
+					while ( !(*(framebuffer_bitmap_pixel + 1)) )
+					{
+						if (*framebuffer_bitmap_pixel == CONTOUR_DIRECTION_DOWN)
+							break;
+
+						unsigned char* target = framebuffer_bitmap_pixel + 1;
+						while ( !(*target) )
+							target++;
+
+						framebuffer_pixel[framebuffer_pixel_counter    ] = 0;
+						framebuffer_pixel[framebuffer_pixel_counter + 1] = 0;
+						framebuffer_pixel[framebuffer_pixel_counter + 2] = 0;
+						framebuffer_pixel_counter += 3;
+						framebuffer_bitmap_pixel++;
+					}
+
+					/* very last pixel separately */
+					framebuffer_pixel[framebuffer_pixel_counter    ] = 0;
+					framebuffer_pixel[framebuffer_pixel_counter + 1] = 0;
+					framebuffer_pixel[framebuffer_pixel_counter + 2] = 0;
+				}
+				i++;
+			}
+			i = 0;
+			j++;
+		}
+	}
