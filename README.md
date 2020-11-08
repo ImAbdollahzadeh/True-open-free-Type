@@ -193,7 +193,7 @@ During drawing of a line or curve into framebuffer, I put the **DIRECTION** flag
 
 	if (fb_bitmap[(j * wnd_wd) + i] != 0)
 	
-This part of he code searches for the first labeled pixel. When finds it, do the other criteria.
+This part of the code searches for the first labeled pixel. When finds it, do the other criteria.
 
 	/* check to see that it is not the very last bitmap byte in a row */
 	unsigned int cnt = wnd_wd - i;
@@ -205,8 +205,8 @@ This part of he code searches for the first labeled pixel. When finds it, do the
 	if (!cnt)
 		break;
 		
-If there is another pixel labeled in the same row, most probably we have an UP-DOWN combination, otherwise, if we would reach the end of that specific row, we simply neglect the rest of te row. In another word, to be a pixel inside a border, there should be two labeles in a given scan row. The left should be UP and the right must be DOWN (this is the only criteria to accept).
-The variable ***cnt*** above makes us to see if we reach the end of the row or not. If ***cnt*** reaches 0, it means we covered the whole row without being able to find an UP-DOWN case to math. The rest of the source code if how to paint the pixels.
+If there is another pixel labeled in the same row, most probably we have an UP-DOWN combination, otherwise, if we would reach the end of that specific row, we simply neglect the rest of the row. In another word, to be a pixel inside a border, there should be two labeles in a given scan row. The left should be UP and the right must be DOWN (this is the only criteria to accept).
+The variable ***cnt*** above makes us to see if we reach the end of the row or not. If ***cnt*** reaches 0, it means we covered the whole row without being able to find an UP-DOWN case to math. The rest of the source code is how to paint the pixels.
 
 To demonstrate the power of the method, look at the following image.
 
