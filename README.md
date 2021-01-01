@@ -275,3 +275,4 @@ To see what we can get from all of these functions, have a look at the following
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/a_letter_subpixel.PNG"/>
 </p>
 
+h<sub>&theta;</sub>(x)
