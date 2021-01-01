@@ -18,7 +18,7 @@ True (open, free) Type implementation from scratch
 ## Bezier Curves
 What I did to render a curve on screen is constructing a power series (up to 3rd order) which control the curvature of the path.
 
-In fact in my curve implementation, I stick to cubic bezier curve. It simply is an equation in form of ***AX<sup>3</sup> + B(X^2) + CX + D***.
+In fact in my curve implementation, I stick to cubic bezier curve. It simply is an equation in form of ***AX<sup>3</sup> + B<sup>2</sup> + CX + D***.
 
 But it is not all. The design of a curve must follow having four points (a 2D coordination pair such as x and y), where point 0 and 3 are starting and ending points and points 1 and 2 are called control points. The latter points are the tuning of the curvature.
 
