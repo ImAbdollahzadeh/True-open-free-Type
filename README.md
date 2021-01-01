@@ -279,6 +279,8 @@ In the following, the real look of our subpixel font rendering at 12 pt and 36 p
 
 <p align="center">
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/a_12.png"/>
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/b_12.png"/>
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/i_12.png"/>
 </p>
 
 <p align="center">
