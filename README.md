@@ -278,13 +278,13 @@ To see what we can get from all of these functions, have a look at the following
 In the following, the real look of our subpixel font rendering at 12 pt and 36 pt is given for face types a, b, and i.
 
 <p align="center">
-	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/a_12.PNG"/>
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/a_12.png"/>
 </p>
 
 <p align="center">
-	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/b_12.PNG"/>
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/b_12.png"/>
 </p>
 
 <p align="center">
-	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/i_12.PNG"/>
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/i_12.png"/>
 </p>
