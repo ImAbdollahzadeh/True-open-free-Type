@@ -310,4 +310,4 @@ In the following, the real look of our subpixel font rendering at 12 pt and 36 p
 
 If we carefully look at facetype 'a'rendered at 36 pt above, at the very convex side of the leter at left most side, there is a red looking part which must be filtered (i.e. smoothing) in order to get better looked in our visual system. For this very important reason a color space transformation has o be applied.
 
-One way to represent a pixel is through its own subpixels (R, G, and B elements). Another way is to look at this pixel in terms of red and blue chrominance as well as luminance factor. These elements are shown by C<sub>r</sub>, C<sub>b</sub>, and Y.
+One way to represent a pixel is through its own subpixels (R, G, and B elements). Another way is to look at this pixel in terms of red and blue chrominance as well as luminance factor. These elements are shown by u, v, and Y. Two eements u and v are a mixture of the all colors (r, g, b) with different ballance between them. Y element, on the other hand, is the intensity, or brightness of the pixel.
