@@ -320,11 +320,11 @@ If we look at the transformation relation, we will see that the Y element mostly
 
 Te next step is to keep Y constant (because we don't want to lose the intensity or energy of the pixel), anddecrease the u and v elements in order to lower the chrominance of the corresponding pixel. Here we apply a 50 % decrease (you can experiment another value).
 
-        u *= 0.5;
-        v *= 0.5;
+	u *= 0.5;
+	v *= 0.5;
 	
 and do the inverse transformation to RGB color space with new u and v values like:
 
-        r = y + (1.13983 * v);
-        g = y - (0.39465 * u) - (0.5806 * v);
-        b = y + (2.03211 * u);
+	r = y + (1.13983 * v);
+	g = y - (0.39465 * u) - (0.5806 * v);
+	b = y + (2.03211 * u);
