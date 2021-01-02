@@ -313,8 +313,8 @@ If we carefully look at facetype 'a' rendered at 36 pt above, at the very convex
 One way to represent a pixel is through its own subpixels (R, G, and B elements). Another way is to look at this pixel in terms of red and blue chrominance as well as luminance factor. These elements are shown by u, v, and Y. Two elements u and v are a mixture of all colors (r, g, b) with different ballance in between. Y element, on the other hand, is the intensity, or brightness of the whole pixel. There is a simple transformation as:
 
 	y =  0.2990 * r + 0.5870 * g + 0.1140 * b;
-        u = -0.1471 * r - 0.2888 * g + 0.4360 * b;
-        v =  0.6150 * r - 0.5149 * g - 0.10001 * b;
+	u = -0.1471 * r - 0.2888 * g + 0.4360 * b;
+	v =  0.6150 * r - 0.5149 * g - 0.10001 * b;
 
 If we look at the transformation relation, we will see that the Y element mostly comes from R and G elements (green-yellowish brightness), u comes from B element which somwhow considers the blue color of the pixel, and v mainly considers redness. 
 
