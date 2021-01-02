@@ -385,3 +385,11 @@ In the following image, the effect of such transformation was shown. Note that t
 <p align="center">
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/yuv_filter.PNG"/>
 </p>
+
+and in its true size (36 pt) it looks something like:
+
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/yuv_filter_2.PNG"/>
+</p>
+
+Th bright red pixels (at leftmost) and glowing blue pixels at rightmost sides, now, after yuv filtering, are gone away.
