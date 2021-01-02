@@ -329,6 +329,57 @@ and do the inverse transformation to RGB color space with new u and v values lik
 	g = y - (0.39465 * u) - (0.5806 * v);
 	b = y + (2.03211 * u);
 
+The complete non-optimized source code for such a color space transformation is in function **save_subpixel_scene**
+
+	/* check yuv. If so, perform it */
+	if (yuv)
+	{
+		// ...
+		unsigned int  alignment = 0;
+		unsigned int  px        = 0;
+		unsigned char red       = 0;
+		unsigned char grn       = 0;
+		unsigned char blu       = 0;
+		double y = 0;
+		double u = 0;
+		double v = 0;
+		
+		unsigned int row_counter = 0;
+		unsigned int alignment_step = WINDOW_WIDTH_ALIGN(3 * (wnd_wd) / 24) - (3 * (wnd_wd) / 24);
+
+		while (px < (3 * (wnd_wd) / 24) * (wnd_ht / 24))
+		{
+			red = output_buffer[px + alignment + 0];
+			grn = output_buffer[px + alignment + 1];
+			blu = output_buffer[px + alignment + 2];
+		
+			double r = (double)red;
+			double g = (double)grn;
+			double b = (double)blu;
+		
+			y = 0.299*r + 0.587*g + 0.114*b;
+			u = -0.1471*r - 0.2888*g + 0.436*b;
+			v = 0.615*r - 0.5149*g - 0.10001*b;
+			u *= 0.5;
+			v *= 0.5;
+			r = y + (1.13983 * v);
+			g = y - (0.39465 * u) - (0.5806 * v);
+			b = y + (2.03211 * u);
+		
+			yuv_buffer[px + alignment + 0] = (unsigned char)r;
+			yuv_buffer[px + alignment + 1] = (unsigned char)g;
+			yuv_buffer[px + alignment + 2] = (unsigned char)b;
+		
+			px += 3;
+			row_counter++;
+			if (row_counter == ((wnd_wd) / 24))
+			{
+				row_counter = 0;
+				alignment += alignment_step;
+			}
+		}
+		// ...
+	}
 In the following image, the effect of such transformation was shown. Note that the filtering was 50 % uv decreasing ad keeping y constant.
 
 <p align="center">
