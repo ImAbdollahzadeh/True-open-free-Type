@@ -308,6 +308,23 @@ In the following, the real look of our subpixel font rendering at 12 pt and 36 p
 ## STEP 5:
 ### RGB <-> YUV space transformation and facetype smoothing
 
-If we carefully look at facetype 'a'rendered at 36 pt above, at the very convex side of the leter at left most side, there is a red looking part which must be filtered (i.e. smoothing) in order to get better looked in our visual system. For this very important reason a color space transformation has o be applied.
+If we carefully look at facetype 'a' rendered at 36 pt above, at the very convex side of the leter, at left most side, there is a red looking part which must be filtered (i.e. smoothing) in order to get better looked in our visual system. For this very important reason a color space transformation has o be applied.
 
-One way to represent a pixel is through its own subpixels (R, G, and B elements). Another way is to look at this pixel in terms of red and blue chrominance as well as luminance factor. These elements are shown by u, v, and Y. Two eements u and v are a mixture of the all colors (r, g, b) with different ballance between them. Y element, on the other hand, is the intensity, or brightness of the pixel.
+One way to represent a pixel is through its own subpixels (R, G, and B elements). Another way is to look at this pixel in terms of red and blue chrominance as well as luminance factor. These elements are shown by u, v, and Y. Two elements u and v are a mixture of all colors (r, g, b) with different ballance in between. Y element, on the other hand, is the intensity, or brightness of the whole pixel. There is a simple transformation as:
+
+	y =  0.2990 * r + 0.5870 * g + 0.1140 * b;
+        u = -0.1471 * r - 0.2888 * g + 0.4360 * b;
+        v =  0.6150 * r - 0.5149 * g - 0.10001 * b;
+
+If we look at the transformation relation, we will see that the Y element mostly comes from R and G elements (green-yellowish brightness), u comes from B element which somwhow considers the blue color of the pixel, and v mainly considers redness. 
+
+Te next step is to keep Y constant (because we don't want to lose the intensity or energy of the pixel), anddecrease the u and v elements in order to lower the chrominance of the corresponding pixel. Here we apply a 50 % decrease (you can experiment another value).
+
+        u *= 0.5;
+        v *= 0.5;
+	
+and do the inverse transformation to RGB color space with new u and v values like:
+
+        r = y + (1.13983 * v);
+        g = y - (0.39465 * u) - (0.5806 * v);
+        b = y + (2.03211 * u);
