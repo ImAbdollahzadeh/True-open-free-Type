@@ -392,4 +392,4 @@ and in its true size (36 pt) it looks something like:
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/yuv_filter_2.PNG"/>
 </p>
 
-Th bright red pixels (at leftmost) and glowing blue pixels at rightmost sides, now, after yuv filtering, are gone away.
+The bright red pixels (at leftmost) and glowing blue pixels at rightmost sides, now, after yuv filtering, are gone away.
