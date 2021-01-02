@@ -383,5 +383,5 @@ The complete non-optimized source code for such a color space transformation is 
 In the following image, the effect of such transformation was shown. Note that the filtering was 50 % uv decreasing ad keeping y constant.
 
 <p align="center">
-	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/yuv_demo.PNG"/>
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/yuv_filter.PNG"/>
 </p>
