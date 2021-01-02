@@ -328,3 +328,9 @@ and do the inverse transformation to RGB color space with new u and v values lik
 	r = y + (1.13983 * v);
 	g = y - (0.39465 * u) - (0.5806 * v);
 	b = y + (2.03211 * u);
+
+In the following image, the effect of such transformation was shown. Note that the filtering was 50 % uv decreasing ad keeping y constant.
+
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/yuv_demo.PNG"/>
+</p>
