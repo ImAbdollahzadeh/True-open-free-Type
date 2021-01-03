@@ -393,3 +393,13 @@ and in its real size (36 pt) it looks something like:
 </p>
 
 The bright red pixels (at leftmost) and glowing blue pixels at rightmost sides, now, after yuv filtering, are gone away.
+
+# Acceleration
+## SIMD optimization
+I belive that we learned a lot of concepts up until now and we are now able to design and render a face-type on screen while subpixeled and smoothed. That is great but not optimized. It makes our font rasterizer engine very busy and we have to work around theconcept of acceleration. When performance boost is demanded in graphic engines, there are **two** pricples that should be addressed. First, native C code optimization prior to any assembly usage, and second, using assembly and x86-SSE or x86-AVX assembly to speed up things.
+
+What I mainly consider here to be covered are:
+1. Changing each pixel representation from 24 bits per pixel (bpp) to 32 bpp. 
+2. Aligning every face-type buffer on 16 byte boundaries.
+
+With the former, one can easily render, mask, and iterate through pixels in DWORD or QWORD pointers and with the latter, using XMM pointers are available in highly optimized way. Not to mention that we need an extra 16 bytes at the end of each line (for the sake of safety during XMM iteration). As such our 9 x 19 pixel buffer would be ended up to (9 x 19 x 4) + 16 = 988 byte instead of our former 9 x 19 x 3 = 513 bytes.
