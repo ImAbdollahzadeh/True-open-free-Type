@@ -409,9 +409,8 @@ With the former, one can easily render, mask, and iterate through pixels in DWOR
 ## Bezier curves calulation optimization
 Have a quick look at function **draw_bezier_curve**, where there are many unnecessary calls into function **pow**. We do not need to calculate second and third powers in this expensive way. We can simply satically calculate these powers values and save them inside a buffer available to our assembler. Inside the for loop, we have to calculate xu and yu values based on these statically given coefficients. Furthermore, I did the multiplications of static coefficients A, B, C, and D with x and y coordinates of the points with my x86-SSE assembly code.
 
-One more step that can boost the performance of this function is this line
+In simple words, I have 4000 coefficients, 16-byte aligned at hand (corresponding to A, B, C, and D for all 1000 iteration of the for loop). During each iteration, I do the inner product of coefficients and x and y cordinates of the given 4 points
 
-	unsigned int px = ((unsigned int)yu * width) + ((unsigned int)xu * bytes_per_pixel);
-	
-There are two expensive casting from floating points to unsigned int. Apparently C/C++ compilers do quite a lot of checking policies during such casting. Since we do not need extra instruction to be wasted during cast from float (or double) to unsigned int, I provided an optimized version only dedicated to it.
-
+	xu = A * p[0].x + B * p[1].x + C * p[2].x + D * p[3].x;
+	yu = A * p[0].y + B * p[1].y + C * p[2].y + D * p[3].y;
+with all p[0].x, p[1].x, p[2].x, p[3].x, p[0].y, p[1].y, p[2].y, and p[3].y values as a loop constant variable which must be considered outside of the loop. Then a x86-SSE optimized inner (dot) product is applied and values xu and yu is spited out over each iteration. With these two values, then I perform *simd_create_binary_mask_up_impl*  or *simd_create_binary_mask_down_impl* functions 
