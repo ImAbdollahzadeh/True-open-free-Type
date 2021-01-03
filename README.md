@@ -407,3 +407,11 @@ With the former, one can easily render, mask, and iterate through pixels in DWOR
 ***-->*** A side note: Although my CPU supports AVX, I would stick to SSE (128-bit registers) and only demonstrate 128-bit acceleration. The experimenting with 256-bit and/or 512-bit registers are left to the skilled readers. 
 
 ## Bezier curves calulation optimization
+Have a quick look at function **draw_bezier_curve**, where there are many unnecessary calls into function **pow**. We do not need to calculate second and third powers in this expensive way. We can simply satically calculate these powers values and save them inside a buffer available to our assembler. Inside the for loop, we have to calculate xu and yu values based on these statically given coefficients. Furthermore, I did the multiplications of static coefficients A, B, C, and D with x and y coordinates of the points with my x86-SSE assembly code.
+
+One more step that can boost the performance of this function is this line
+
+	unsigned int px = ((unsigned int)yu * width) + ((unsigned int)xu * bytes_per_pixel);
+	
+There are two expensive casting from floating points to unsigned int. Apparently C/C++ compilers do quite a lot of checking policies during such casting. Since we do not need extra instruction to be wasted during cast from float (or double) to unsigned int, I provided an optimized version only dedicated to it.
+
