@@ -308,7 +308,7 @@ In the following, the real look of our subpixel font rendering at 12 pt and 36 p
 ## STEP 5:
 ### RGB <-> YUV space transformation and facetype smoothing
 
-If we carefully look at facetype 'a' rendered at 36 pt above, at the very convex side of the leter, at left most side, there is a red looking part which must be filtered (i.e. smoothing) in order to get better looked in our visual system. For this very important reason a color space transformation has o be applied.
+If we carefully look at face-type 'a' rendered at 36 pt above, at the very convex side of the leter, at leftmost side, there is a red looking part which must be filtered (i.e. smoothing) in order to get better visualized in our eyes. For this very important reason a color space transformation has to be applied.
 
 One way to represent a pixel is through its own subpixels (R, G, and B elements). Another way is to look at this pixel in terms of red and blue chrominance as well as luminance factor. These elements are shown by u, v, and Y. Two elements u and v are a mixture of all colors (r, g, b) with different ballance in between. Y element, on the other hand, is the intensity, or brightness of the whole pixel. There is a simple transformation as:
 
@@ -316,9 +316,9 @@ One way to represent a pixel is through its own subpixels (R, G, and B elements)
 	u = -0.1471 * r - 0.2888 * g + 0.4360 * b;
 	v =  0.6150 * r - 0.5149 * g - 0.10001 * b;
 
-If we look at the transformation relation, we will see that the Y element mostly comes from R and G elements (green-yellowish brightness), u comes from B element which somwhow considers the blue color of the pixel, and v mainly considers redness. 
+If we look at the transformation relation, we will see that the Y element mostly comes from R and G elements (green-yellowish brightness), u comes from B element which somehow considers the blue color of the pixel, and v mainly considers redness. 
 
-Te next step is to keep Y constant (because we don't want to lose the intensity or energy of the pixel), anddecrease the u and v elements in order to lower the chrominance of the corresponding pixel. Here we apply a 50 % decrease (you can experiment another value).
+The next step is to keep Y element constant (because we don't want to lose the intensity or energy of the pixel), and decrease the u and v elements in order to lower the chrominance of the corresponding pixel. Here we apply a 50 % decrease (you can experiment another value).
 
 	u *= 0.5;
 	v *= 0.5;
@@ -380,13 +380,13 @@ The complete non-optimized source code for such a color space transformation is 
 		}
 		// ...
 	}
-In the following image, the effect of such transformation was shown. Note that the filtering was 50 % uv decreasing ad keeping y constant.
+In the following image, the effect of such transformation is shown. Note that the filtering was 50 % uv decreasing and keeping Y element constant.
 
 <p align="center">
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/yuv_filter.PNG"/>
 </p>
 
-and in its true size (36 pt) it looks something like:
+and in its real size (36 pt) it looks something like:
 
 <p align="center">
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/yuv_filter_2.PNG"/>
