@@ -417,6 +417,25 @@ with all p<sub>0x</sub>, p<sub>1x</sub>, p<sub>2x</sub>, p<sub>3x</sub>, p<sub>0
 
 In the following, I provide an example of how calculate xu and yu in C and in SSE:
 
+	.DATA
+	; --- These statically declared are A, B, C, and D values 
+	ALIGN 16
+	coef    real4		1.000000, 0.000000, 0.000000, 0.000000
+		real4		0.997003, 0.002994, 0.000003, 0.000000
+		real4		0.994012, 0.005976, 0.000012, 0.000000
+		real4		0.991027, 0.008946, 0.000027, 0.000000
+		real4		0.988048, 0.011904, 0.000048, 0.000000
+		real4		0.985075, 0.014850, 0.000075, 0.000000
+		real4		0.982108, 0.017785, 0.000107, 0.000000
+		real4		0.979147, 0.020707, 0.000146, 0.000000
+		real4		0.976191, 0.023618, 0.000190, 0.000001
+		...
+		real4		0.000000, 0.000003, 0.002994, 0.997003
+		real4		0.000000, 0.000000, 0.000000, 1.000000
+		
+	CODE SEGMENT DWORD PUBLIC 'CODE' USE32
+	ASSUME CS:CODE
+	
 	/* SSE optimized bezier curve calculations */
 	; ---- void sse_bezier_curve(void* points_coordinate, unsigned int* xy_holder, unsigned int iterator);
 	
