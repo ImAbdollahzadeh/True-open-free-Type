@@ -413,12 +413,13 @@ In simple words, I have 4000 coefficients, 16-byte aligned at hand (correspondin
 
 	xu = A * p[0].x + B * p[1].x + C * p[2].x + D * p[3].x;
 	yu = A * p[0].y + B * p[1].y + C * p[2].y + D * p[3].y;
-with all p<sub>0x</sub>, p<sub>1x</sub>, <sub>2x</sub>, <sub>3x</sub>, <sub>0y</sub>, <sub>1y</sub>, <sub>2y</sub>, and <sub>3y</sub> values as a loop constant variable which must be considered outside of the loop. Then a x86-SSE optimized inner (dot) product is applied and values xu and yu is spited out over each iteration. With these two values, then I perform *simd_create_binary_mask_up_impl*  or *simd_create_binary_mask_down_impl* functions.
+with all p<sub>0x</sub>, p<sub>1x</sub>, p<sub>2x</sub>, p<sub>3x</sub>, p<sub>0y</sub>, p<sub>1y</sub>, p<sub>2y</sub>, and p<sub>3y</sub> values as a loop invariant which must be considered outside of the loop. Then a x86-SSE optimized inner (dot) product is applied and values xu and yu is spited out over each iteration. With these two values, then I perform ***simd_create_binary_mask_up_impl*** or ***simd_create_binary_mask_down_impl*** functions.
 
 In the following, I provide an example of how calculate xu and yu in C and in SSE:
 
 	/* SSE optimized bezier curve calculations */
 	; ---- void sse_bezier_curve(void* points_coordinate, unsigned int* xy_holder, unsigned int iterator);
+	
 	_sse_bezier_curve PROC NEAR
 		push     ebp
 		mov      ebp,              esp
@@ -441,10 +442,13 @@ In the following, I provide an example of how calculate xu and yu in C and in SS
 		ret
 	_sse_bezier_curve ENDP
 
-; ----------------------------------
+	; ----------------------------------
+	
+and
 
 	extern void sse_bezier_curve(void* points_coordinate, unsigned int* xy_holder, unsigned int iterator);
 
+	/* C non-optimized bezier curve calculations */
 	void c_bezier_curve(POINT_2D* p)
 	{
 		unsigned int xu = 0, yu = 0;
