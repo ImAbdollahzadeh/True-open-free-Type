@@ -509,7 +509,6 @@ and
 		
 		// internaly iterates 1000 times
 		TIME( c_bezier_curve(points) );
-		
-		
-		/* ===> conclusion -> SIMD version is 10X faster than CPP version ! */
 	}
+
+Conclusion -> SSE is nearly 10X faster than C version.
