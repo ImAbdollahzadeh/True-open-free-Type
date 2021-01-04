@@ -413,18 +413,18 @@ In simple words, I have 4000 coefficients, 16-byte aligned at hand (correspondin
 
 	xu = A * p[0].x + B * p[1].x + C * p[2].x + D * p[3].x;
 	yu = A * p[0].y + B * p[1].y + C * p[2].y + D * p[3].y;
-with all p[0].x, p[1].x, p[2].x, p[3].x, p[0].y, p[1].y, p[2].y, and p[3].y values as a loop constant variable which must be considered outside of the loop. Then a x86-SSE optimized inner (dot) product is applied and values xu and yu is spited out over each iteration. With these two values, then I perform *simd_create_binary_mask_up_impl*  or *simd_create_binary_mask_down_impl* functions.
+with all p<sub>0x</sub>, p<sub>1x</sub>, <sub>2x</sub>, <sub>3x</sub>, <sub>0y</sub>, <sub>1y</sub>, <sub>2y</sub>, and <sub>3y</sub> values as a loop constant variable which must be considered outside of the loop. Then a x86-SSE optimized inner (dot) product is applied and values xu and yu is spited out over each iteration. With these two values, then I perform *simd_create_binary_mask_up_impl*  or *simd_create_binary_mask_down_impl* functions.
 
 In the following, I provide an example of how calculate xu and yu in C and in SSE:
 
 	/* SSE optimized bezier curve calculations */
-	; ---- void sse_bezier_curve(void* points_coordinate, unsigned int* x_holder, unsigned int* y_holder, unsigned int iterator);
+	; ---- void sse_bezier_curve(void* points_coordinate, unsigned int* xy_holder, unsigned int iterator);
 	_sse_bezier_curve PROC NEAR
 		push     ebp
 		mov      ebp,              esp
 		mov      eax,              DWORD PTR[ebp + 8]
-		mov      ecx,              DWORD PTR[ebp + 12]     ; x_holder
-		mov      esi,              DWORD PTR[ebp + 16]     ; y_holder
+		mov      ecx,              DWORD PTR[ebp + 12]     ; xy_holder
+		mov      esi,              DWORD PTR[ebp + 16]     ; iterator
 		shl      esi,              4
 		add      esi,              OFFSET[coef]
 		movaps   xmm0,             XMMWORD PTR[esi     ]   ; coefficients
@@ -443,7 +443,7 @@ In the following, I provide an example of how calculate xu and yu in C and in SS
 
 ; ----------------------------------
 
-	extern void sse_bezier_curve(void* points_coordinate, unsigned int* x_holder, unsigned int* y_holder);
+	extern void sse_bezier_curve(void* points_coordinate, unsigned int* xy_holder, unsigned int iterator);
 
 	void c_bezier_curve(POINT_2D* p)
 	{
@@ -465,10 +465,9 @@ In the following, I provide an example of how calculate xu and yu in C and in SS
 		}
 	}
 
-	int main() 
+	void main(void) 
 	{
-		__declspec (align(16)) unsigned int xu = 0;
-		__declspec (align(16)) unsigned int yu = 0;
+		__declspec (align(16)) unsigned int xy[4] = { 0,0,0,0 };
 		__declspec (align(16)) float bezier_curve_4_points[8] =
 		{
 			{ /* some values for demonstration: e.g. 0.0, 0.0 */ },
@@ -477,8 +476,17 @@ In the following, I provide an example of how calculate xu and yu in C and in SS
 			{ /* some values for demonstration: e.g. 0.0, 0.0 */ }
 		};
 		POINT_2D points[8] = { /* some values for demonstration: e.g. 1,2,3,4,5,6,7,8 */ };
-
-		TIME( sse_bezier_curve(bezier_curve_4_points, &xu, &yu) );		
+		unsigned int i;
+		
+		// iterate 1000 times
+		TIME( 
+			for(i=0; i<1000; i++)
+				sse_bezier_curve(bezier_curve_4_points, &xy, i) 
+		);
+		
+		// internaly iterates 1000 times
 		TIME( c_bezier_curve(points) );
-		// conclusion -> SIMD version is 10X faster than CPP version !
+		
+		
+		/* ===> conclusion -> SIMD version is 10X faster than CPP version ! */
 	}
