@@ -417,6 +417,32 @@ with all p[0].x, p[1].x, p[2].x, p[3].x, p[0].y, p[1].y, p[2].y, and p[3].y valu
 
 In the following, I provide an example of how calculate xu and yu in C and in SSE:
 
+	/* SSE optimized bezier curve calculations */
+	; ---- void sse_bezier_curve(void* points_coordinate, unsigned int* x_holder, unsigned int* y_holder, unsigned int iterator);
+	_sse_bezier_curve PROC NEAR
+		push     ebp
+		mov      ebp,              esp
+		mov      eax,              DWORD PTR[ebp + 8]
+		mov      ecx,              DWORD PTR[ebp + 12]     ; x_holder
+		mov      esi,              DWORD PTR[ebp + 16]     ; y_holder
+		shl      esi,              4
+		add      esi,              OFFSET[coef]
+		movaps   xmm0,             XMMWORD PTR[esi     ]   ; coefficients
+		movaps   xmm1,             XMMWORD PTR[eax     ]   ; x corrdinate of vector elements
+		movaps   xmm2,             XMMWORD PTR[eax + 16]   ; y corrdinate of vector elements
+		mulps    xmm1,             xmm0
+		mulps    xmm2,             xmm0
+		haddps   xmm1,             xmm2
+		haddps   xmm1,             xmm2
+		cvtps2dq xmm0,             xmm1
+		movaps   XMMWORD PTR[ecx], xmm0
+		mov      esp,              ebp
+		pop      ebp
+		ret
+	_sse_bezier_curve ENDP
+
+; ----------------------------------
+
 	extern void sse_bezier_curve(void* points_coordinate, unsigned int* x_holder, unsigned int* y_holder);
 
 	void c_bezier_curve(POINT_2D* p)
