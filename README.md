@@ -551,3 +551,5 @@ It looks something like:
 	__declspec (align(16)) unsigned int xy[2000];
 	TIME( sse_bezier_curve(bezier_curve_4_points, &xy) );
 	
+There is not much left to optimize bezier curve calculations anymore. I stopped it here and go further to work on filling up the curves and lines. 
+In our non-optimized, I first drew borders labeled as UP or DOWN and then decided how to fill up the pixels in between. Here to boost the speed of rawing up, I go directly to filling the pixels with black paint and there is no need to work onborders. For such a scenario, first of all, I have to start calculating curves and lines coordinates from lefmost object to the rightmost. If the object was labeled a UP, I simply do a fast black painting to the end of the scan line. If the label of the object would be DOWN, I do the opposite and paint the rest of the scan line as white paint. To make it more clear, look at the simple drawing below:   
