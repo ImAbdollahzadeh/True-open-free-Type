@@ -512,3 +512,40 @@ and
 	}
 
 Conclusion -> SSE is nearly 10X faster than C version.
+
+We see that there is still the expense of calling ***sse_bezier_curve***. To solve this, I defined 2000 unsgned int for xy buffer and omit the iteration index (i).
+
+It looks something like:
+
+	_sse_bezier_curve PROC NEAR
+		push     ebp
+		mov      ebp,                    esp
+		mov      eax,                    DWORD PTR[ebp + 8]
+		mov      ecx,                    DWORD PTR[ebp + 12]     ; xy_holder
+		xor      esi,                    esi                     ; iterator = 0
+		xor      edi,                    edi                     ; iteator in xy_holder_buffer
+	__LOOP__:
+		add      esi,                    OFFSET[coef]
+		movaps   xmm0,                   XMMWORD PTR[esi     ]   ; coefficients
+		movaps   xmm1,                   XMMWORD PTR[eax     ]   ; x corrdinate of vector elements
+		movaps   xmm2,                   XMMWORD PTR[eax + 16]   ; y corrdinate of vector elements
+		mulps    xmm1,                   xmm0
+		mulps    xmm2,                   xmm0
+		haddps   xmm1,                   xmm2
+		haddps   xmm1,                   xmm2
+		cvtps2dq xmm0,                   xmm1
+		movaps   XMMWORD PTR[ecx + edi], xmm0
+		add      edi,                    8                       ; sizeof(2 * unsigned int)
+		add      esi                     4
+		cmp      edi,                    8000                    ; sizeof(2000 * unsigned int)
+		jne      __LOOP__      
+		mov      esp,                    ebp
+		pop      ebp
+		ret
+	_sse_bezier_curve ENDP
+
+	; ----------------------------------
+
+	extern void sse_bezier_curve(void* points_coordinate, unsigned int* xy_holder);
+	TIME( sse_bezier_curve(bezier_curve_4_points, &xy) );
+	
