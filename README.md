@@ -552,4 +552,9 @@ It looks something like:
 	TIME( sse_bezier_curve(bezier_curve_4_points, &xy) );
 	
 There is not much left to optimize bezier curve calculations anymore. I stopped it here and go further to work on filling up the curves and lines. 
-In our non-optimized, I first drew borders labeled as UP or DOWN and then decided how to fill up the pixels in between. Here to boost the speed of rawing up, I go directly to filling the pixels with black paint and there is no need to work onborders. For such a scenario, first of all, I have to start calculating curves and lines coordinates from lefmost object to the rightmost. If the object was labeled a UP, I simply do a fast black painting to the end of the scan line. If the label of the object would be DOWN, I do the opposite and paint the rest of the scan line as white paint. To make it more clear, look at the simple drawing below:   
+In our non-optimized C code, first I drew borders labeled as UP or DOWN and then decided how to fill up the pixels in between. Here to boost the speed of drawing up, I go directly to filling the pixels with black paint and there is no need to work on borders. For such a scenario, I have to start calculating curves or lines coordinates (obtained from xy buffer) from lefmost object to the rightmost. If the object (line or curve) was labeled a UP, I simply do a fast (SSE accelerated) black painting to the end of the scan line (i.e. row). On the contrary, if the label of the object would be DOWN, I would perform the opposite and paint the rest of the scan line with white paint. To make it more clear, look at the simple drawing below:   
+
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/sse_optimized_fillingup.PNG"/>
+</p>
+
