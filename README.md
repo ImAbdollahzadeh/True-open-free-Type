@@ -490,7 +490,7 @@ and
 
 	void main(void) 
 	{
-		__declspec (align(16)) unsigned int xy[4] = { 0,0,0,0 };
+		__declspec (align(16)) unsigned int xy[2] = { 0,0 };
 		__declspec (align(16)) float bezier_curve_4_points[8] =
 		{
 			{ /* some values for demonstration: e.g. 0.0, 0.0 */ },
@@ -513,7 +513,7 @@ and
 
 Conclusion -> SSE is nearly 10X faster than C version.
 
-We see that there is still the expense of calling ***sse_bezier_curve***. To solve this, I defined 2000 unsgned int for xy buffer and omit the iteration index (i).
+We see that there is still the expense of calling ***sse_bezier_curve***. To solve this, I defined 2000 *unsigned int* for xy buffer and omitted the iteration index i.
 
 It looks something like:
 
@@ -547,5 +547,7 @@ It looks something like:
 	; ----------------------------------
 
 	extern void sse_bezier_curve(void* points_coordinate, unsigned int* xy_holder);
+	
+	__declspec (align(16)) unsigned int xy[2000];
 	TIME( sse_bezier_curve(bezier_curve_4_points, &xy) );
 	
