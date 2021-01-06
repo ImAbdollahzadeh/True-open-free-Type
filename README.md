@@ -573,7 +573,11 @@ One another trick to limit the amount of black and/or white paints, is through s
 	; ---------------------------------------------------------------
 	.CODE
 	
-	;void simd_create_binary_mask_up_impl(unsigned int byte, unsigned int byte_offset, unsigned int aligned_offset, unsigned int number_of_chunks, void* fb);
+	;void simd_create_binary_mask_up_impl(unsigned int byte, 
+	                                      unsigned int byte_offset, 
+					      unsigned int aligned_offset,
+					      unsigned int number_of_chunks, 
+					      void* fb);
 	
 	_simd_create_binary_mask_up_impl PROC NEAR
 		push   ebp
@@ -631,7 +635,11 @@ One another trick to limit the amount of black and/or white paints, is through s
 
 	; ---------------------------------------------------------------
 	
-	;void simd_create_binary_mask_down_impl(unsigned int byte, unsigned int byte_offset, unsigned int aligned_offset, unsigned int number_of_chunks, void* fb);
+	;void simd_create_binary_mask_down_impl(unsigned int byte, 
+	                                        unsigned int byte_offset, 
+						unsigned int aligned_offset, 
+						unsigned int number_of_chunks, 
+						void* fb);
 	
 	_simd_create_binary_mask_down_impl PROC NEAR
 		push   ebp
