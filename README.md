@@ -566,7 +566,7 @@ One another trick to limit the amount of black and/or white paints, is through s
 
 Two accelrated blit functions **simd_create_binary_mask_up_impl** and **simd_create_binary_mask_down_impl** are given below.
 
-Note that both functions get arguments **byte** (the position of first byte that must be painted in framebuffer), **byte_offset** (offset of the pixel from the beginning of the row),
+Note that both functions get arguments **byte** (the position of first byte that must be painted in framebuffer. It will be calculated directly from xu and yu values), **byte_offset** (offset of the pixel from the beginning of the row),
 **aligned_offset** (offset of the 16-byte aligned pixel from the beginning of the row), **number_of_chunks** (how many 128-bit chunks presented), and **fb** (framebuffer).
 
 	; ---------------------------------------------------------------
