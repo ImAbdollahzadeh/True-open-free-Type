@@ -558,7 +558,7 @@ In our non-optimized C code, first I drew borders labeled as UP or DOWN and then
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/sse_optimized_fillingup.PNG"/>
 </p>
 
-One another trick to limit the amount of black and/or white paints, is through stiopping the SSE-accelerate blitting up untile a provided boundary prior to the end of the scan line. This boundary would be somewhere inside glyph, aligned on a 16-byte boundary (i.e. four pixels).
+One another trick to limit the amount of black and/or white paints, is through stopping the SSE-accelerated blitting up until a provided boundary prior to the end of the scan line. This boundary would be somewhere inside glyph and aligned on a 16-byte boundary (i.e. four pixels).
 
 <p align="center">
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/sse_optimized_fillingup_II.PNG"/>
