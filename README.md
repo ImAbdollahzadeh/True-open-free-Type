@@ -573,7 +573,7 @@ Note that both functions get arguments **byte** (the position of first byte that
 	
 	.DATA
 	ALIGN 16
-		minus1 DWORD -1, -1, -1, -1
+		white_pixels DWORD -1, -1, -1, -1
 		
 	; ---------------------------------------------------------------
 	.CODE
@@ -587,10 +587,10 @@ Note that both functions get arguments **byte** (the position of first byte that
 	_simd_create_binary_mask_up_impl PROC NEAR
 		push   ebp
 		mov    ebp, esp               
-		mov    eax, DWORD PTR[ebp + 24] ;fb
-		mov    ecx, DWORD PTR[ebp + 8]  ;byte
-		add    eax, ecx                 ;now eax is where the single byte filling starts
-		mov    ecx, DWORD PTR[ebp + 12] ;byte_offset
+		mov    eax, DWORD PTR[ebp + 24] ; fb
+		mov    ecx, DWORD PTR[ebp + 8]  ; byte
+		add    eax, ecx                 ; now eax is where the single byte filling starts
+		mov    ecx, DWORD PTR[ebp + 12] ; byte_offset
 	_byte_single_blit:
 		cmp    ecx, 0
 		je     _byte_single_blit_end
@@ -599,7 +599,7 @@ Note that both functions get arguments **byte** (the position of first byte that
 		sub    ecx, 1
 		jmp    _byte_single_blit
 	_byte_single_blit_end:
-		mov    ecx, DWORD PTR[ebp + 20] ;number_of_chunks
+		mov    ecx, DWORD PTR[ebp + 20] ; number_of_chunks
 		xorps  xmm0, xmm0               ; 16 byte 0 values
 		xorps  xmm1, xmm1               ; 16 byte 0 values
 		xorps  xmm2, xmm2               ; 16 byte 0 values
@@ -647,10 +647,10 @@ Note that both functions get arguments **byte** (the position of first byte that
 	_simd_create_binary_mask_down_impl PROC NEAR
 		push   ebp
 		mov    ebp, esp               
-		mov    eax, DWORD PTR[ebp + 24] ;fb
-		mov    ecx, DWORD PTR[ebp + 8]  ;byte
-		add    eax, ecx                 ;now eax is where the single byte filling starts
-		mov    ecx, DWORD PTR[ebp + 12] ;byte_offset
+		mov    eax, DWORD PTR[ebp + 24]        ; fb
+		mov    ecx, DWORD PTR[ebp + 8]         ; byte
+		add    eax, ecx                        ; now eax is where the single byte filling starts
+		mov    ecx, DWORD PTR[ebp + 12]        ; byte_offset
 	_byte_single_blit:
 		cmp    ecx, 0
 		je     _byte_single_blit_end
@@ -659,15 +659,15 @@ Note that both functions get arguments **byte** (the position of first byte that
 		sub    ecx, 1
 		jmp    _byte_single_blit
 	_byte_single_blit_end:
-		mov    ecx, DWORD PTR[ebp + 20] ;number_of_chunks
-		movaps xmm0, XMMWORD PTR[minus1]; 16 byte 255 values
-		movaps xmm1, xmm0               ; 16 byte 255 values
-		movaps xmm2, xmm0               ; 16 byte 255 values
-		movaps xmm3, xmm0               ; 16 byte 255 values
-		movaps xmm4, xmm0               ; 16 byte 255 values
-		movaps xmm5, xmm0               ; 16 byte 255 values
-		movaps xmm6, xmm0               ; 16 byte 255 values
-		movaps xmm7, xmm0               ; 16 byte 255 values
+		mov    ecx, DWORD PTR[ebp + 20]        ; number_of_chunks
+		movaps xmm0, XMMWORD PTR[white_pixels] ; 16 byte 255 values
+		movaps xmm1, xmm0                      ; 16 byte 255 values
+		movaps xmm2, xmm0                      ; 16 byte 255 values
+		movaps xmm3, xmm0                      ; 16 byte 255 values
+		movaps xmm4, xmm0                      ; 16 byte 255 values
+		movaps xmm5, xmm0                      ; 16 byte 255 values
+		movaps xmm6, xmm0                      ; 16 byte 255 values
+		movaps xmm7, xmm0                      ; 16 byte 255 values
 		cmp    ecx, 8
 		jl     _byte_simd_blit
 	_super_simd:
@@ -697,3 +697,6 @@ Note that both functions get arguments **byte** (the position of first byte that
 	_simd_create_binary_mask_down_impl ENDP
 	
 	; ---------------------------------------------------------------
+
+Both given functions can be adjusted in a way to get xy buffer (filled beforehand) as an argument and calculate byte, byte_offset, and chunks instead of passing them as arguments and loop through xy buffer. In such a way, the overhead of calling simd_create_binary_mask_up_imple and simd_create_binary_mask_down_impl is gone away. This method of acceleration would be neglected here and is expected as a homework to readers.
+
