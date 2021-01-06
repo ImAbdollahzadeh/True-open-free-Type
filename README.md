@@ -563,3 +563,128 @@ One another trick to limit the amount of black and/or white paints, is through s
 <p align="center">
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/sse_optimized_fillingup_II.PNG"/>
 </p>
+
+	; ---------------------------------------------------------------
+	
+	.DATA
+	ALIGN 16
+		minus1 DWORD -1, -1, -1, -1
+		
+	; ---------------------------------------------------------------
+	.CODE
+	
+	;void simd_create_binary_mask_up_impl(unsigned int byte, unsigned int byte_offset, unsigned int aligned_offset, unsigned int number_of_chunks, void* fb);
+	
+	_simd_create_binary_mask_up_impl PROC NEAR
+		push   ebp
+		mov    ebp, esp               
+		mov    eax, DWORD PTR[ebp + 24] ;fb
+		mov    ecx, DWORD PTR[ebp + 8]  ;byte
+		add    eax, ecx                 ;now eax is where the single byte filling starts
+		mov    ecx, DWORD PTR[ebp + 12] ;byte_offset
+	_byte_single_blit:
+		cmp    ecx, 0
+		je     _byte_single_blit_end
+		mov    BYTE PTR[eax], 0
+		add    eax, 1
+		sub    ecx, 1
+		jmp    _byte_single_blit
+	_byte_single_blit_end:
+		mov    ecx, DWORD PTR[ebp + 20] ;number_of_chunks
+		xorps  xmm0, xmm0               ; 16 byte 0 values
+		xorps  xmm1, xmm1               ; 16 byte 0 values
+		xorps  xmm2, xmm2               ; 16 byte 0 values
+		xorps  xmm3, xmm3               ; 16 byte 0 values
+		xorps  xmm4, xmm4               ; 16 byte 0 values
+		xorps  xmm5, xmm5               ; 16 byte 0 values
+		xorps  xmm6, xmm6               ; 16 byte 0 values
+		xorps  xmm7, xmm7               ; 16 byte 0 values
+		cmp    ecx, 8
+		jl     _byte_simd_blit
+		cmp    ecx, 8
+		jl     _byte_simd_blit
+	_super_simd:
+		movaps XMMWORD PTR[eax],     xmm0
+		movaps XMMWORD PTR[eax+16],  xmm1
+		movaps XMMWORD PTR[eax+32],  xmm2
+		movaps XMMWORD PTR[eax+48],  xmm3
+		movaps XMMWORD PTR[eax+64],  xmm4
+		movaps XMMWORD PTR[eax+80],  xmm5
+		movaps XMMWORD PTR[eax+96],  xmm6
+		movaps XMMWORD PTR[eax+112], xmm7
+		add    eax, 128 
+		sub    ecx, 8
+		cmp    ecx, 8
+		jg     _super_simd
+	_byte_simd_blit:
+		cmp    ecx, 0
+		je     _byte_simd_blit_end
+		movaps XMMWORD PTR[eax], xmm0
+		add    eax, 16 
+		sub    ecx, 1
+		jmp    _byte_simd_blit
+	_byte_simd_blit_end:	
+		mov    esp, ebp 
+		pop    ebp
+		ret
+	_simd_create_binary_mask_up_impl ENDP
+
+	; ---------------------------------------------------------------
+	
+	;void simd_create_binary_mask_down_impl(unsigned int byte, unsigned int byte_offset, unsigned int aligned_offset, unsigned int number_of_chunks, void* fb);
+	
+	_simd_create_binary_mask_down_impl PROC NEAR
+		push   ebp
+		mov    ebp, esp               
+		mov    eax, DWORD PTR[ebp + 24] ;fb
+		mov    ecx, DWORD PTR[ebp + 8]  ;byte
+		add    eax, ecx                 ;now eax is where the single byte filling starts
+		mov    ecx, DWORD PTR[ebp + 12] ;byte_offset
+	_byte_single_blit:
+		cmp    ecx, 0
+		je     _byte_single_blit_end
+		mov    BYTE PTR[eax], 255
+		add    eax, 1
+		sub    ecx, 1
+		jmp    _byte_single_blit
+	_byte_single_blit_end:
+		mov    ecx, DWORD PTR[ebp + 20] ;number_of_chunks
+		movaps xmm0, XMMWORD PTR[minus1]; 16 byte 255 values
+		movaps xmm1, xmm0               ; 16 byte 255 values
+		movaps xmm2, xmm0               ; 16 byte 255 values
+		movaps xmm3, xmm0               ; 16 byte 255 values
+		movaps xmm4, xmm0               ; 16 byte 255 values
+		movaps xmm5, xmm0               ; 16 byte 255 values
+		movaps xmm6, xmm0               ; 16 byte 255 values
+		movaps xmm7, xmm0               ; 16 byte 255 values
+		cmp    ecx, 8
+		jl     _byte_simd_blit
+		cmp    ecx, 8
+		jl     _byte_simd_blit
+	_super_simd:
+		movaps XMMWORD PTR[eax],     xmm0
+		movaps XMMWORD PTR[eax+16],  xmm1
+		movaps XMMWORD PTR[eax+32],  xmm2
+		movaps XMMWORD PTR[eax+48],  xmm3
+		movaps XMMWORD PTR[eax+64],  xmm4
+		movaps XMMWORD PTR[eax+80],  xmm5
+		movaps XMMWORD PTR[eax+96],  xmm6
+		movaps XMMWORD PTR[eax+112], xmm7
+		add    eax, 128 
+		sub    ecx, 8
+		cmp    ecx, 8
+		jg     _super_simd
+	_byte_simd_blit:
+		cmp    ecx, 0
+		je     _byte_simd_blit_end
+		movaps XMMWORD PTR[eax], xmm0
+		add    eax, 16 
+		sub    ecx, 1
+		jmp    _byte_simd_blit
+	_byte_simd_blit_end:	
+		mov    esp, ebp 
+		pop    ebp
+		ret
+	_simd_create_binary_mask_down_impl ENDP
+	
+	; ---------------------------------------------------------------
