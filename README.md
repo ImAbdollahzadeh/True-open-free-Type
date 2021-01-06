@@ -564,6 +564,11 @@ One another trick to limit the amount of black and/or white paints, is through s
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/sse_optimized_fillingup_II.PNG"/>
 </p>
 
+Two accelrated blit functions **simd_create_binary_mask_up_impl** and **simd_create_binary_mask_down_impl** are given below.
+
+Note that both functions get arguments **byte** (the position of first byte that must be painted in framebuffer), **byte_offset** (offset of the pixel from the beginning of the row),
+**aligned_offset** (offset of the 16-byte aligned pixel from the beginning of the row), **number_of_chunks** (how many 128-bit chunks presented), and **fb** (framebuffer).
+
 	; ---------------------------------------------------------------
 	
 	.DATA
@@ -603,8 +608,6 @@ One another trick to limit the amount of black and/or white paints, is through s
 		xorps  xmm5, xmm5               ; 16 byte 0 values
 		xorps  xmm6, xmm6               ; 16 byte 0 values
 		xorps  xmm7, xmm7               ; 16 byte 0 values
-		cmp    ecx, 8
-		jl     _byte_simd_blit
 		cmp    ecx, 8
 		jl     _byte_simd_blit
 	_super_simd:
@@ -665,8 +668,6 @@ One another trick to limit the amount of black and/or white paints, is through s
 		movaps xmm5, xmm0               ; 16 byte 255 values
 		movaps xmm6, xmm0               ; 16 byte 255 values
 		movaps xmm7, xmm0               ; 16 byte 255 values
-		cmp    ecx, 8
-		jl     _byte_simd_blit
 		cmp    ecx, 8
 		jl     _byte_simd_blit
 	_super_simd:
