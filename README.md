@@ -702,9 +702,9 @@ Both given functions can be adjusted in a way to get xy buffer (filled beforehan
 
 **Accelereation of PIXEL_BLOCKs or subpixel calculations**
 
-In this step, we are going to take into account every single 8 x 24 pixel blocks, calculate how much of it was painted by black and then recalculate the R, G, or B intensity for the corresponding pixel. The SSE optimized function for such a calculation is ***sse_subpixel_blocks_optimization***. This function has two arguments, void* *block_buffer* and unsigned int *window_width_in_bytes*. *block_buffer* is the offset of the given PIXEL_BLOCK and window_width_in_bytes is the size of the glyph's width in terms of bytes. Note that there are 16 extra bytes in each row. 
+In this step, we are going to take into account every single 8 x 24 pixel blocks, calculate how much of it was painted by black, and then recalculate the R, G, or B intensity for the corresponding pixel. The SSE optimized function for such a calculation is ***sse_subpixel_blocks_optimization***. This function has two arguments, **void*** *block_buffer* and **unsigned int** *window_width_in_bytes*. *block_buffer* is the offset of the given PIXEL_BLOCK and *window_width_in_bytes* is the size of the glyph's width in terms of bytes. Note that there are 16 extra bytes in each row. 
 
-There is one another note. I would change the concept of black and white paints, as described above, by black = 0xFFFFFFFF, and white = 0x00000000 (contrary to what I showed above). The only thing that must be changed is simd_create_binary_mask_down_impl to be like
+There is one another note. I would change the concept of black and white paints, as described above, by **black to be 0xFFFFFFFF**, and **white to be 0x00000000** (contrary to what I showed above). The only thing that must be changed is **simd_create_binary_mask_down_impl** to modifies something like
 
 		xorps  xmm0, xmm0               ; 16 byte 0 values
 		xorps  xmm1, xmm1               ; 16 byte 0 values
@@ -715,7 +715,7 @@ There is one another note. I would change the concept of black and white paints,
 		xorps  xmm6, xmm6               ; 16 byte 0 values
 		xorps  xmm7, xmm7               ; 16 byte 0 values
 
-and simd_create_binary_mask_up_impl to includes
+and **simd_create_binary_mask_up_impl** to include
 
 		movaps xmm0, XMMWORD PTR[white_pixels] ; 16 byte 255 values
 		movaps xmm1, xmm0                      ; 16 byte 255 values
@@ -726,16 +726,16 @@ and simd_create_binary_mask_up_impl to includes
 		movaps xmm6, xmm0                      ; 16 byte 255 values
 		movaps xmm7, xmm0                      ; 16 byte 255 values
 
-Therefore, it would be much easier and faster to write a code as following:
+Therefore, it would be much easier and faster calculation (with less instructions) when writing an assembly code as following:
 
 	.CODE
-	; ---------- void sse_subpixel_blocks_optimization(void*    block_buffer, 
+	; ---------- void sse_subpixel_blocks_optimization(void*        block_buffer, 
 	                                                   unsigned int window_width_in_bytes);
 	_sse_subpixel_blocks_optimization PROC NEAR
 		push      ebp
 		mov       ebp,              esp
-		xorps     xmm7,             xmm7
-		xorps     xmm6,             xmm6
+		xorps     xmm7,             xmm7          ; clear this register
+		xorps     xmm6,             xmm6          ; clear this register
 		mov       eax,              [ebp + 8]     ; eax contains the block_buffer
 		mov       ebx,              [ebp + 12]    ; ebx is the window_width_in_bytes
 		mov       esi,              [mask_values] ; mask values to make zero and ones
@@ -777,12 +777,12 @@ Therefore, it would be much easier and faster to write a code as following:
 		mov      eax,               [final_intensity]
 		sub      eax,               [level]
 		mov      [final_intensity], eax
-		sub      ecx,               1
-		cmp      ecx,               0
 		pop      eax                
 		mov      edi,               edx             
 		imul     edi,               6
 		add      eax,               edi
+		sub      ecx,               1
+		cmp      ecx,               0
 		jne      _sse_subpixel_blocks_optimization_loop_
 		mov      esp,               ebp
 		pop      ebp
@@ -799,3 +799,16 @@ Therefore, it would be much easier and faster to write a code as following:
 	
 	; ----------------------------------------------------------------------------------------------
 	
+The function **sse_subpixel_blocks_optimization** is used in our C code as 
+
+	unsigned int pixel_blocks_number = 0;
+	unsigned int wnd_in_bytes        = 0;
+	PIXEL_BLOCKS* pb                 = 0;
+	
+	while(pixel_blocks_number--)
+	{
+		sse_subpixel_blocks_optimization(pb, wnd_in_bytes);
+		pb++;
+	}
+	
+It will be left for users to work on *sse_subpixel_blocks_optimization* function to iterate internally, and reduce the overhead of function's prologue and epilogue.
