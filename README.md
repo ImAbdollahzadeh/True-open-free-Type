@@ -700,3 +700,102 @@ Note that both functions get arguments **byte** (the position of first byte that
 
 Both given functions can be adjusted in a way to get xy buffer (filled beforehand) as an argument and calculate byte, byte_offset, and chunks instead of passing them as arguments and loop through xy buffer. In such a way, the overhead of calling simd_create_binary_mask_up_imple and simd_create_binary_mask_down_impl is gone away. This method of acceleration would be neglected here and is expected as a homework to readers.
 
+**Accelereation of PIXEL_BLOCKs or subpixel calculations**
+
+In this step, we are going to take into account every single 8 x 24 pixel blocks, calculate how much of it was painted by black and then recalculate the R, G, or B intensity for the corresponding pixel. The SSE optimized function for such a calculation is ***sse_subpixel_blocks_optimization***. This function has two arguments, void* *block_buffer* and unsigned int *window_width_in_bytes*. *block_buffer* is the offset of the given PIXEL_BLOCK and window_width_in_bytes is the size of the glyph's width in terms of bytes. Note that there are 16 extra bytes in each row. 
+
+There is one another note. I would change the concept of black and white paints, as described above, by black = 0xFFFFFFFF, and white = 0x00000000 (contrary to what I showed above). The only thing that must be changed is simd_create_binary_mask_down_impl to be like
+
+		xorps  xmm0, xmm0               ; 16 byte 0 values
+		xorps  xmm1, xmm1               ; 16 byte 0 values
+		xorps  xmm2, xmm2               ; 16 byte 0 values
+		xorps  xmm3, xmm3               ; 16 byte 0 values
+		xorps  xmm4, xmm4               ; 16 byte 0 values
+		xorps  xmm5, xmm5               ; 16 byte 0 values
+		xorps  xmm6, xmm6               ; 16 byte 0 values
+		xorps  xmm7, xmm7               ; 16 byte 0 values
+
+and simd_create_binary_mask_up_impl to includes
+
+		movaps xmm0, XMMWORD PTR[white_pixels] ; 16 byte 255 values
+		movaps xmm1, xmm0                      ; 16 byte 255 values
+		movaps xmm2, xmm0                      ; 16 byte 255 values
+		movaps xmm3, xmm0                      ; 16 byte 255 values
+		movaps xmm4, xmm0                      ; 16 byte 255 values
+		movaps xmm5, xmm0                      ; 16 byte 255 values
+		movaps xmm6, xmm0                      ; 16 byte 255 values
+		movaps xmm7, xmm0                      ; 16 byte 255 values
+
+Therefore, it would be much easier and faster to write a code as following:
+
+	.CODE
+	; ---------- void sse_subpixel_blocks_optimization(void*    block_buffer, 
+	                                                   unsigned int window_width_in_bytes);
+	_sse_subpixel_blocks_optimization PROC NEAR
+		push      ebp
+		mov       ebp,              esp
+		xorps     xmm7,             xmm7
+		xorps     xmm6,             xmm6
+		mov       eax,              [ebp + 8]     ; eax contains the block_buffer
+		mov       ebx,              [ebp + 12]    ; ebx is the window_width_in_bytes
+		mov       esi,              [mask_values] ; mask values to make zero and ones
+		mov       ecx,              6             ; we have 24 rows (in 6 steps the whole rows can be covered)
+		mov       edx,              ebx
+		add       edx,              16            ; extra 16 bytes for sake of SSE security
+	_sse_subpixel_blocks_optimization_loop_:
+		movaps    xmm0,             [eax     ]
+		movaps    xmm1,             [eax + 16]
+		movaps    xmm2,             [eax + edx]
+		movaps    xmm3,             [eax + edx + 16]
+		movaps    xmm4,             [eax + edx * 2]
+		movaps    xmm5,             [eax + edx * 2 + 16]
+		andps     xmm0,             esi
+		andps     xmm1,             esi
+		andps     xmm2,             esi
+		andps     xmm3,             esi
+		andps     xmm4,             esi
+		andps     xmm5,             esi
+		haddps    xmm0,             xmm7
+		haddps    xmm1,             xmm6
+		haddps    xmm2,             xmm7
+		haddps    xmm3,             xmm6
+		haddps    xmm4,             xmm7
+		haddps    xmm5,             xmm6
+		haddps    xmm0,             xmm7
+		haddps    xmm1,             xmm6
+		haddps    xmm2,             xmm7
+		haddps    xmm3,             xmm6
+		haddps    xmm4,             xmm7
+		haddps    xmm5,             xmm6
+		haddps    xmm0,             xmm1
+		haddps    xmm2,             xmm3
+		haddps    xmm4,             xmm5
+		haddps    xmm0,             xmm2
+		haddps    xmm0,             xmm4
+		movss    [level],           xmm0
+		push     eax                
+		mov      eax,               [final_intensity]
+		sub      eax,               [level]
+		mov      [final_intensity], eax
+		sub      ecx,               1
+		cmp      ecx,               0
+		pop      eax                
+		mov      edi,               edx             
+		imul     edi,               6
+		add      eax,               edi
+		jne      _sse_subpixel_blocks_optimization_loop_
+		mov      esp,               ebp
+		pop      ebp
+		ret
+	_sse_subpixel_blocks_optimization ENDP
+	
+	; ----------------------------------------------------------------------------------------------
+	
+	.DATA
+	align 16 
+		mask_values     DWORD 0x00000001, 0x00000001, 0x00000001, 0x00000001
+		level           DWORD 0
+		final_intensity DWORD 0
+	
+	; ----------------------------------------------------------------------------------------------
+	
