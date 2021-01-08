@@ -730,7 +730,8 @@ Therefore, it would be much easier and faster calculation (with less instruction
 
 	.CODE
 	; ---------- void sse_subpixel_blocks_optimization(void*        block_buffer, 
-	                                                   unsigned int window_width_in_bytes);
+	                                                   unsigned int window_width_in_bytes,
+							   void*        output_buffer);
 	_sse_subpixel_blocks_optimization PROC NEAR
 		push      ebp
 		mov       ebp,              esp
@@ -781,9 +782,12 @@ Therefore, it would be much easier and faster calculation (with less instruction
 		mov      edi,               edx             
 		imul     edi,               6
 		add      eax,               edi
-		sub      ecx,               1
+		sub      ecx,               1		
 		cmp      ecx,               0
 		jne      _sse_subpixel_blocks_optimization_loop_
+		mov      eax,               [final_intensity]
+		mov      ebx,               [ebp + 16]    
+		mov      [ebx],             eax           ; save rgb as floats (or DWORD)           
 		mov      esp,               ebp
 		pop      ebp
 		ret
