@@ -805,14 +805,17 @@ Therefore, it would be much easier and faster calculation (with less instruction
 	
 The function **sse_subpixel_blocks_optimization** is used in our C code as 
 
-	unsigned int pixel_blocks_number = 0;
-	unsigned int wnd_in_bytes        = 0;
-	PIXEL_BLOCKS* pb                 = 0;
+	unsigned int pixel_blocks_number    = 0;
+	unsigned int wnd_in_bytes           = 0;
+	PIXEL_BLOCKS* pb                    = 0;
+	float*        output_buffer         = 0;
+	unsigned int  output_buffer_counter = 0;
 	
 	while(pixel_blocks_number--)
 	{
-		sse_subpixel_blocks_optimization(pb, wnd_in_bytes);
+		sse_subpixel_blocks_optimization(pb, wnd_in_bytes, &output_buffer[output_buffer_counter]);
 		pb++;
+		output_buffer_counter += sizeof(float);
 	}
 	
 It will be left for users to work on *sse_subpixel_blocks_optimization* function to iterate internally, and reduce the overhead of function's prologue and epilogue.
