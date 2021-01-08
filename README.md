@@ -734,62 +734,62 @@ Therefore, it would be much easier and faster calculation (with less instruction
 							   void*        output_buffer);
 	_sse_subpixel_blocks_optimization PROC NEAR
 		push      ebp
-		mov       ebp,              esp
-		xorps     xmm7,             xmm7          ; clear this register
-		xorps     xmm6,             xmm6          ; clear this register
-		mov       eax,              [ebp + 8]     ; eax contains the block_buffer
-		mov       ebx,              [ebp + 12]    ; ebx is the window_width_in_bytes
-		mov       esi,              [mask_values] ; mask values to make zero and ones
-		mov       ecx,              6             ; we have 24 rows (in 6 steps the whole rows can be covered)
-		mov       edx,              ebx
-		add       edx,              16            ; extra 16 bytes for sake of SSE security
+		mov       ebp,               esp
+		xorps     xmm7,              xmm7          ; clear this register
+		xorps     xmm6,              xmm6          ; clear this register
+		mov       eax,               [ebp + 8]     ; eax contains the block_buffer
+		mov       ebx,               [ebp + 12]    ; ebx is the window_width_in_bytes
+		mov       esi,               [mask_values] ; mask values to make zero and ones
+		mov       ecx,               6             ; we have 24 rows (in 6 steps the whole rows can be covered)
+		mov       edx,               ebx
+		add       edx,               16            ; extra 16 bytes for sake of SSE security
 	_sse_subpixel_blocks_optimization_loop_:
-		movaps    xmm0,             [eax     ]
-		movaps    xmm1,             [eax + 16]
-		movaps    xmm2,             [eax + edx]
-		movaps    xmm3,             [eax + edx + 16]
-		movaps    xmm4,             [eax + edx * 2]
-		movaps    xmm5,             [eax + edx * 2 + 16]
-		andps     xmm0,             esi
-		andps     xmm1,             esi
-		andps     xmm2,             esi
-		andps     xmm3,             esi
-		andps     xmm4,             esi
-		andps     xmm5,             esi
-		haddps    xmm0,             xmm7
-		haddps    xmm1,             xmm6
-		haddps    xmm2,             xmm7
-		haddps    xmm3,             xmm6
-		haddps    xmm4,             xmm7
-		haddps    xmm5,             xmm6
-		haddps    xmm0,             xmm7
-		haddps    xmm1,             xmm6
-		haddps    xmm2,             xmm7
-		haddps    xmm3,             xmm6
-		haddps    xmm4,             xmm7
-		haddps    xmm5,             xmm6
-		haddps    xmm0,             xmm1
-		haddps    xmm2,             xmm3
-		haddps    xmm4,             xmm5
-		haddps    xmm0,             xmm2
-		haddps    xmm0,             xmm4
-		movss    [level],           xmm0
-		push     eax                
-		mov      eax,               [final_intensity]
-		sub      eax,               [level]
-		mov      [final_intensity], eax
-		pop      eax                
-		mov      edi,               edx             
-		imul     edi,               6
-		add      eax,               edi
-		sub      ecx,               1		
-		cmp      ecx,               0
-		jne      _sse_subpixel_blocks_optimization_loop_
-		mov      eax,               [final_intensity]
-		mov      ebx,               [ebp + 16]    
-		mov      [ebx],             eax           ; save rgb as floats (or DWORD)           
-		mov      esp,               ebp
-		pop      ebp
+		movaps    xmm0,              [eax     ]
+		movaps    xmm1,              [eax + 16]
+		movaps    xmm2,              [eax + edx]
+		movaps    xmm3,              [eax + edx + 16]
+		movaps    xmm4,              [eax + edx * 2]
+		movaps    xmm5,              [eax + edx * 2 + 16]
+		andps     xmm0,              esi
+		andps     xmm1,              esi
+		andps     xmm2,              esi
+		andps     xmm3,              esi
+		andps     xmm4,              esi
+		andps     xmm5,              esi
+		haddps    xmm0,              xmm7
+		haddps    xmm1,              xmm6
+		haddps    xmm2,              xmm7
+		haddps    xmm3,              xmm6
+		haddps    xmm4,              xmm7
+		haddps    xmm5,              xmm6
+		haddps    xmm0,              xmm7
+		haddps    xmm1,              xmm6
+		haddps    xmm2,              xmm7
+		haddps    xmm3,              xmm6
+		haddps    xmm4,              xmm7
+		haddps    xmm5,              xmm6
+		haddps    xmm0,              xmm1
+		haddps    xmm2,              xmm3
+		haddps    xmm4,              xmm5
+		haddps    xmm0,              xmm2
+		haddps    xmm0,              xmm4
+		movss     [level],           xmm0
+		push      eax                
+		mov       eax,               [final_intensity]
+		sub       eax,               [level]
+		mov       [final_intensity], eax
+		pop       eax                
+		mov       edi,               edx             
+		imul      edi,               6
+		add       eax,               edi
+		sub       ecx,               1		
+		cmp       ecx,               0
+		jne       _sse_subpixel_blocks_optimization_loop_
+		mov       eax,               [final_intensity]
+		mov       ebx,               [ebp + 16]    
+		mov       [ebx],             eax           ; save rgb as floats (or DWORD)           
+		mov       esp,               ebp
+		pop       ebp
 		ret
 	_sse_subpixel_blocks_optimization ENDP
 	
