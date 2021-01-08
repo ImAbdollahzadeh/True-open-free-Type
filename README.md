@@ -836,6 +836,87 @@ This way, SSE calculations can be easily performed. Note that every pixel, now, 
 
 The SSE optimized assembly code for such a transformation would be:
 
+	; -----------------------------------------------------------------------------------------
+	
+	.DATA
+	ALIGN 16
+		M_matrix_row_0		real4	 0.299,   0.587,   0.114,   0.0
+		M_matrix_row_1		real4	-0.1471, -0.2888,  0.436,   0.0
+		M_matrix_row_2		real4	 0.615,  -0.5149, -0.10001, 0.0
+		M_matrix_row_3		real4	 0.0,     0.0,     0.0,     0.0
+		
+		M_prime_matrix_row_0	real4	1.0,  0.0,      1.13983, 0.0
+		M_prime_matrix_row_1	real4	1.0, -0.39465, -0.5806,  0.0
+		M_prime_matrix_row_2	real4	1.0,  2.03211,  0.0,     0.0
+		M_prime_matrix_row_3	real4	0.0,  0.0,      0.0,     0.0
+
+		element_product		real4	1.0, 0.5, 0.5, 0.0
+		
+		_PSHUF_PATTERN_1	DWORD	1,1,0,1
+		_PSHUF_PATTERN_2	DWORD	1,0,1,1
+		
+	; -----------------------------------------------------------------------------------------
+	
+	CODE SEGMENT DWORD PUBLIC 'CODE' USE32
+	ASSUME CS:CODE
+	
+	/* SSE optimized rgb-yuv-rgb transformations */
+	; ---- void sse_rgb_yuv_rgb(void* yuv, void* rgb);
+	
+	_sse_rgb_yuv_rgb PROC NEAR
+		push     ebp
+		mov      ebp,              esp
+		mov      eax,              DWORD PTR[ebp + 8]                ; yuv buffer
+		mov      ebx,              DWORD PTR[ebp + 12]               ; rgb buffer
+		xorps    xmm6,             xmm6                              
+		movaps   xmm0,             XMMWORD PTR[M_matrix_row_0]       ; matrix M
+		movaps   xmm1,             XMMWORD PTR[M_matrix_row_1]       ; matrix M
+		movaps   xmm2,             XMMWORD PTR[M_matrix_row_2]       ; matrix M	
+		movaps   xmm4,             XMMWORD PTR[eax]                  ; yuv
+		movaps   xmm5,             XMMWORD PTR[ebx]                  ; rgb		
+		mulps    xmm0,             xmm5
+		mulps    xmm1,             xmm5
+		mulps    xmm2,             xmm5
+		haddps   xmm0,             xmm6
+		haddps   xmm0,             xmm6
+		haddps   xmm1,             xmm6
+		haddps   xmm1,             xmm6
+		haddps   xmm2,             xmm6
+		haddps   xmm2,             xmm6
+		pshufd   xmm1,             XMMWORD PTR[_PSHUF_PATTERN_1] 
+		pshufd   xmm2,             XMMWORD PTR[_PSHUF_PATTERN_2]
+		addps    xmm0,             xmm1
+		addps    xmm0,             xmm2
+		movaps   xmm4,             xmm0                              ; save yuv in its register
+		mulps    xmm4,             XMMWORD PTR[element_product]      ; perform lowering the chrominance		
+		movaps   xmm0,             XMMWORD PTR[M_prime_matrix_row_0] ; matrix M'
+		movaps   xmm1,             XMMWORD PTR[M_prime_matrix_row_1] ; matrix M'
+		movaps   xmm2,             XMMWORD PTR[M_prime_matrix_row_2] ; matrix M'
+		mulps    xmm0,             xmm4
+		mulps    xmm1,             xmm4
+		mulps    xmm2,             xmm4
+		haddps   xmm0,             xmm6
+		haddps   xmm0,             xmm6
+		haddps   xmm1,             xmm6
+		haddps   xmm1,             xmm6
+		haddps   xmm2,             xmm6
+		haddps   xmm2,             xmm6
+		pshufd   xmm1,             XMMWORD PTR[_PSHUF_PATTERN_1] 
+		pshufd   xmm2,             XMMWORD PTR[_PSHUF_PATTERN_2]
+		addps    xmm0,             xmm1
+		addps    xmm0,             xmm2
+		movaps   [ebx],            xmm0		
+		mov      esp,              ebp
+		pop      ebp
+		ret
+	_sse_rgb_yuv_rgb ENDP
+
+	; -----------------------------------------------------------------------------------------
+	
+and in C code
+	
+	extern void sse_rgb_yuv_rgb(void* yuv, void* rgb);
+	
 	float* rgb = /* 16-byte RGBA arrays */;
 	float* yuv = /* 16-byte yuv0 arrays */;
 	unsigned int counter = 0;
