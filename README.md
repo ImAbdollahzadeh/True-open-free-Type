@@ -832,3 +832,14 @@ We made the output of the subpixel calculations as DWORD or float arrays in orde
 	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/matrices.PNG"/>
 </p>
 
+This way, SSE calculations can be easily performed. Note that every pixel, now, is represented with 16 bytes (we saved R, G, and B elements in **sse_subpixel_blocks_optimization** as 4-byte values), and with each dot product (using one of XMM registers) we are able to calculate one pixel.
+
+The SSE optimized assembly code for such a transformation would be:
+
+	float* rgb = /* 16-byte RGBA arrays */;
+	float* yuv = /* 16-byte yuv0 arrays */;
+	unsigned int counter = 0;
+	
+	for(counter = 0; counter < number_of_elements; counter++)
+		sse_rgb_yuv_rgb(&yuv[counter], &rgb[counter]);
+	
