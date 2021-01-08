@@ -9,7 +9,7 @@ True (open, free) Type implementation from scratch
 
 # Prerequisites
 - Knowledge of subpixel rendering on LCD panels
-- Knowledge of C programming language
+- Good knowledge of x86 assembly and C programming languages
 
 # Optimization
 - SIMD optimization 
