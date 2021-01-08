@@ -819,3 +819,16 @@ The function **sse_subpixel_blocks_optimization** is used in our C code as
 	}
 	
 It will be left for users to work on *sse_subpixel_blocks_optimization* function to iterate internally, and reduce the overhead of function's prologue and epilogue.
+
+**Acceleration of RGB <-> YUV <-> RGB transformations**
+
+We made the output of the subpixel calculations as DWORD or float arrays in order to use them here for further speed gaining. I will make these calculations based on our previous dot products. In fact, I arrange two 4x1 matrices for YUV and rgb and two transformation matrices M and M'. The math representation of these transformations are given below:
+
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/formula.PNG"/>
+</p>
+
+<p align="center">
+	<img src="https://github.com/ImAbdollahzadeh/True-open-free-Type/blob/main/tutorial_resources/matrices.PNG"/>
+</p>
+
